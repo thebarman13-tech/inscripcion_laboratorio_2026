@@ -1,0 +1,66 @@
+/* =======================
+   FILTROS AVANZADOS
+   ======================= */
+
+.filtros-avanzados {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+.filtros-avanzados h3 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filtro-group label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.fechas-range {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.fechas-range input {
+  flex: 1;
+  margin: 0;
+}
+
+.filtro-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.btn-filtrar, .btn-limpiar {
+  padding: 0.6rem 1rem;
+  width: auto;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.btn-filtrar {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.btn-limpiar {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}

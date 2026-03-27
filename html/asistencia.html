@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRTECNO · Reserva de Turnos</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/asistencia.css">
+</head>
+<body>
+
+<header>
+  <div class="logo" id="logoContainer">
+    <div id="logoContent">
+      <span>🔧 DRTECNO</span>
+      <small>Laboratorio</small>
+    </div>
+  </div>
+  
+  <div class="header-controls">
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
+    <nav>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="registro.html">📝 Registro</a>
+      <a href="asistencia.html" class="active">📅 Asistencia</a>
+      <a href="pdf.html">📄 Materiales</a>
+      <a href="cursos.html">🎓 Cursos</a>
+      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
+      <a href="login.html">🔐 Iniciar Sesión</a>
+      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
+      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
+      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
+      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="asistencia-container">
+    <h2>📅 Reservar Turno</h2>
+    
+    <div class="search-bar">
+      <input type="text" id="buscarTurnos" placeholder="🔍 Buscar por alumno, fecha o motivo..." class="search-input">
+    </div>
+    
+    <div id="calendario" class="calendario-grid"></div>
+    
+    <div class="form-card">
+      <h3>✏️ Completar reserva</h3>
+      <form id="formTurno">
+        <div class="form-group">
+          <label>📞 Teléfono del alumno</label>
+          <input type="tel" placeholder="Ej: 1234567890" id="telTurno" required>
+        </div>
+        
+        <div class="form-group">
+          <label>📅 Fecha del turno</label>
+          <input type="date" id="fechaTurno" required>
+        </div>
+        
+        <div class="form-group">
+          <label>⏰ Horario</label>
+          <select id="turnoSelect" required></select>
+        </div>
+        
+        <div class="form-group">
+          <label>📌 Motivo de la asistencia</label>
+          <select id="motivo" required>
+            <option value="">Selecciona un motivo</option>
+            <option>🔧 Problema en placa</option>
+            <option>💻 Software</option>
+            <option>🔄 Cambio de piezas</option>
+            <option>🔍 Diagnóstico</option>
+            <option>📝 Otro</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn-confirmar">✅ Confirmar Asistencia</button>
+      </form>
+    </div>
+    
+    <div class="historial-card" id="historialCard" style="display:none;">
+      <h3>📜 Historial de turnos</h3>
+      <div id="historialTurnos"></div>
+    </div>
+    
+    <div class="login-rapido">
+      <h3>🔐 Iniciar sesión para ver tu perfil</h3>
+      <div class="form-group">
+        <label>📞 Ingresa tu teléfono</label>
+        <input type="tel" id="loginTelefono" placeholder="Ej: 1234567890">
+      </div>
+      <button onclick="iniciarSesion()" class="btn-login-rapido">🚀 Iniciar Sesión</button>
+      <div id="loginMensaje" class="login-mensaje"></div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<div id="modalConfirmacion" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>✅ Turno Confirmado</h2>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button id="btnAceptar" class="btn-aceptar">✔️ ACEPTAR</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script src="../js/asistencia.js"></script>
+
+<script>
+function iniciarSesion() {
+    const telefono = document.getElementById("loginTelefono").value.trim();
+    if (!telefono) {
+        showToast("❌ Ingresa tu teléfono", "error");
+        return;
+    }
+    
+    const alumno = getAlumnoPorTelefono(telefono);
+    if (alumno) {
+        localStorage.setItem("alumno_telefono", telefono);
+        localStorage.setItem("alumno_nombre", alumno.nombre);
+        localStorage.setItem("alumno_apellido", alumno.apellido);
+        localStorage.setItem("alumno_nivel", alumno.nivel);
+        localStorage.setItem("alumno_id", alumno.id);
+        showToast(`✅ Bienvenido ${alumno.nombre}!`, "success");
+        setTimeout(() => {
+            window.location.href = "perfil.html";
+        }, 1500);
+    } else {
+        showToast("❌ Teléfono no registrado. Regístrate primero.", "error");
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+.perfil-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.perfil-header h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+}
+
+.perfil-desc {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+}
+
+.perfil-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.perfil-avatar {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.avatar-icon {
+  font-size: 4rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 3rem;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.avatar-icon:hover {
+  transform: scale(1.05);
+}
+
+.avatar-nivel {
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-guardar {
+  background: linear-gradient(135deg, #10b981, #059669);
+  flex: 1;
+}
+
+.btn-historial {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  flex: 1;
+}
+
+.perfil-mensaje {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.perfil-mensaje.success {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #10b981;
+}
+
+.perfil-mensaje.error {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+.logout-section {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.btn-cerrar-sesion {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  width: auto;
+  padding: 0.6rem 1.5rem;
+}
+
+.historial-section {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.historial-section h3 {
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  border-left: 3px solid #3b82f6;
+  padding-left: 1rem;
+}
+
+.historial-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.historial-turno-item {
+  background: var(--input-bg);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  border-left: 4px solid #10b981;
+}
+
+.historial-turno-item.pasado {
+  border-left-color: #6b7280;
+  opacity: 0.8;
+}
+
+.historial-turno-info {
+  flex: 1;
+}
+
+.historial-turno-fecha {
+  font-weight: bold;
+  color: #3b82f6;
+  margin-bottom: 0.25rem;
+}
+
+.historial-turno-hora {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.historial-turno-motivo {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.historial-turno-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-cancelar-turno {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  padding: 0.5rem 1rem;
+  width: auto;
+  margin: 0;
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+}
+
+.btn-cancelar-turno:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+.turno-completado {
+  font-size: 0.8rem;
+  color: #10b981;
+}
+
+/* Modal de confeti */
+.confeti-modal .modal-content {
+  background: linear-gradient(135deg, var(--modal-bg), var(--modal-bg));
+  text-align: center;
+}
+
+.confeti-animation {
+  font-size: 3rem;
+  animation: confetti 0.5s ease infinite;
+  margin: 1rem 0;
+}
+
+@keyframes confetti {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(10deg); }
+  75% { transform: translateY(5px) rotate(-10deg); }
+}
+
+@media (max-width: 768px) {
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .historial-turno-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .historial-turno-actions {
+    width: 100%;
+  }
+  
+  .btn-cancelar-turno {
+    width: 100%;
+  }
+}

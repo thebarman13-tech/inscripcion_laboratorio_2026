@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRTECNO · Materiales y Documentos</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/pdf.css">
+</head>
+<body>
+
+<header>
+  <div class="logo" id="logoContainer">
+    <div id="logoContent">
+      <span>🔧 DRTECNO</span>
+      <small>Laboratorio</small>
+    </div>
+  </div>
+  
+  <div class="header-controls">
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
+    <nav>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="registro.html">📝 Registro</a>
+      <a href="asistencia.html">📅 Asistencia</a>
+      <a href="pdf.html" class="active">📄 Materiales</a>
+      <a href="cursos.html">🎓 Cursos</a>
+      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
+      <a href="login.html">🔐 Iniciar Sesión</a>
+      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
+      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
+      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
+      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="pdf-container">
+    <div class="pdf-header">
+      <h2>📄 Materiales y Documentos</h2>
+      <p class="pdf-desc">Aquí encontrarás todos los materiales de estudio, guías y documentos importantes para el laboratorio.</p>
+    </div>
+    
+    <div class="categorias">
+      <button class="categoria-btn active" data-categoria="todos">📋 Todos</button>
+      <button class="categoria-btn" data-categoria="PDF">📄 PDF</button>
+      <button class="categoria-btn" data-categoria="DOC">📝 Documentos</button>
+      <button class="categoria-btn" data-categoria="IMG">🖼️ Imágenes</button>
+      <button class="categoria-btn" data-categoria="OTRO">📁 Otros</button>
+    </div>
+    
+    <div class="search-bar">
+      <input type="text" id="buscarArchivo" placeholder="🔍 Buscar por nombre o descripción..." class="search-input">
+    </div>
+    
+    <div id="listaArchivos" class="archivos-grid">
+      <div class="loading">
+        <span>📂</span>
+        <p>Cargando materiales...</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="../js/app.js"></script>
+<script src="../js/pdf.js"></script>
+</body>
+</html>

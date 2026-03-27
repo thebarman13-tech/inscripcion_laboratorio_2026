@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRTECNO · Registro de Alumnos</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/registro.css">
+</head>
+<body>
+
+<header>
+  <div class="logo" id="logoContainer">
+    <div id="logoContent">
+      <span>🔧 DRTECNO</span>
+      <small>Laboratorio</small>
+    </div>
+  </div>
+  
+  <div class="header-controls">
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
+    <nav>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="registro.html" class="active">📝 Registro</a>
+      <a href="asistencia.html">📅 Asistencia</a>
+      <a href="pdf.html">📄 Materiales</a>
+      <a href="cursos.html">🎓 Cursos</a>
+      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
+      <a href="login.html">🔐 Iniciar Sesión</a>
+      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
+      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
+      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
+      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="registro-container">
+    <div class="registro-card">
+      <h2>📝 Registro de Alumno</h2>
+      <p class="registro-desc">Completa tus datos para comenzar a reservar turnos en el laboratorio</p>
+      
+      <form id="formRegistro">
+        <div class="form-group">
+          <label>📛 Nombre</label>
+          <input type="text" placeholder="Ej: Juan" id="nombre" required>
+        </div>
+        
+        <div class="form-group">
+          <label>📛 Apellido</label>
+          <input type="text" placeholder="Ej: Pérez" id="apellido" required>
+        </div>
+        
+        <div class="form-group">
+          <label>📞 Teléfono</label>
+          <input type="tel" placeholder="Ej: 1234567890" id="telefono" required>
+          <small>Este será tu identificador único para reservar turnos</small>
+        </div>
+        
+        <div class="form-group">
+          <label>📚 Nivel</label>
+          <select id="nivel">
+            <option value="Inicial">📘 Inicial</option>
+            <option value="Intermedio">📗 Intermedio</option>
+            <option value="Avanzado">📕 Avanzado</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn-registrar">✅ Registrar Alumno</button>
+      </form>
+      
+      <div id="msgRegistro" class="mensaje-registro"></div>
+    </div>
+    
+    <div class="info-card-registro">
+      <h3>📌 ¿Por qué registrarte?</h3>
+      <ul>
+        <li>✅ Reservar turnos en el laboratorio</li>
+        <li>✅ Ver tu historial de turnos</li>
+        <li>✅ Recibir recordatorios importantes</li>
+        <li>✅ Acceder a materiales exclusivos</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="../js/app.js"></script>
+<script src="../js/registro.js"></script>
+</body>
+</html>

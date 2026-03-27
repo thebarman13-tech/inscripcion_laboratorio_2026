@@ -1,0 +1,112 @@
+/* =======================
+   CALENDARIO MENSUAL
+   ======================= */
+
+.calendario-mensual-section {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+.calendario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.calendario-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.calendario-navegacion {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-mes {
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: auto;
+  margin: 0;
+}
+
+.btn-mes:hover {
+  background: rgba(59, 130, 246, 0.2);
+  transform: none;
+}
+
+.mes-actual {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #3b82f6;
+  min-width: 180px;
+  text-align: center;
+}
+
+.calendario-mensual-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.calendario-dia-nombre {
+  padding: 0.75rem;
+  font-weight: bold;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 0.5rem;
+  color: #3b82f6;
+}
+
+.calendario-dia {
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 80px;
+}
+
+.calendario-dia:hover {
+  transform: translateY(-2px);
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.calendario-dia.otro-mes {
+  opacity: 0.5;
+}
+
+.calendario-dia.hoy {
+  border: 2px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.calendario-dia-numero {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.calendario-turno-count {
+  font-size: 0.7rem;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
+  border-radius: 1rem;
+  padding: 0.2rem 0.4rem;
+  display: inline-block;
+}

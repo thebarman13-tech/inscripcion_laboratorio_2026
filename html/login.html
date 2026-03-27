@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRTECNO · Iniciar Sesión</title>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+
+<header>
+  <div class="logo" id="logoContainer">
+    <div id="logoContent">
+      <span>🔧 DRTECNO</span>
+      <small>Laboratorio</small>
+    </div>
+  </div>
+  
+  <div class="header-controls">
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
+    <nav>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="registro.html">📝 Registro</a>
+      <a href="asistencia.html">📅 Asistencia</a>
+      <a href="pdf.html">📄 Materiales</a>
+      <a href="cursos.html">🎓 Cursos</a>
+      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
+      <a href="login.html" class="active">🔐 Iniciar Sesión</a>
+      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
+      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
+      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
+      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="login-container">
+    <div class="login-card">
+      <h2>🔐 Iniciar Sesión</h2>
+      <p class="login-desc">Ingresa tu teléfono para acceder a tu perfil</p>
+      
+      <form id="formLoginAlumno">
+        <div class="form-group">
+          <label>📞 Teléfono</label>
+          <input type="tel" id="loginTelefono" placeholder="Ej: 1234567890" required>
+          <small>Ingresa el teléfono que usaste al registrarte</small>
+        </div>
+        
+        <button type="submit" class="btn-login-alumno">🚀 Iniciar Sesión</button>
+      </form>
+      
+      <div id="loginMensaje" class="login-mensaje"></div>
+      
+      <div class="login-registro-link">
+        <p>¿No tienes cuenta? <a href="registro.html">📝 Regístrate aquí</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="../js/app.js"></script>
+<script src="../js/login.js"></script>
+</body>
+</html>
