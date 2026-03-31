@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Turnos - Laboratorio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        nav { background: white; border-radius: 10px; padding: 15px 25px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; gap: 20px; flex-wrap: wrap; }
+        nav a { color: #667eea; text-decoration: none; font-weight: bold; padding: 8px 15px; border-radius: 5px; transition: all 0.3s; }
+        nav a:hover { background: #667eea; color: white; }
+        .card { background: white; border-radius: 15px; padding: 25px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .card h2 { color: #667eea; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: transform 0.2s; }
+        button:hover { transform: scale(1.02); }
+        .mensaje { margin-top: 15px; padding: 10px; border-radius: 5px; }
+        .exito { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .tabla-turnos { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; color: #667eea; }
+        tr:hover { background: #f5f5f5; }
+        .cargando { text-align: center; padding: 20px; color: #666; }
+        .cupos-disponible { color: green; font-weight: bold; }
+        .cupos-lleno { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <a href="index.html">🏠 Inicio</a>
+        <a href="registro.html">📝 Registrar Alumno</a>
+        <a href="turnos.html">📅 Gestionar Turnos</a>
+    </nav>
+
+    <div class="card">
+        <h2>📅 Registrar Nuevo Turno</h2>
+        <form id="formRegistroTurno">
+            <div class="form-group">
+                <label>Fecha *</label>
+                <input type="date" id="fecha" required>
+            </div>
+            <div class="form-group">
+                <label>Hora *</label>
+                <input type="time" id="hora" required>
+            </div>
+            <div class="form-group">
+                <label>Laboratorio *</label>
+                <select id="laboratorio" required>
+                    <option value="Laboratorio 1">Laboratorio 1</option>
+                    <option value="Laboratorio 2">Laboratorio 2</option>
+                    <option value="Laboratorio 3">Laboratorio 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Cupos totales *</label>
+                <input type="number" id="cupos" placeholder="Cupos totales" min="1" value="10" required>
+            </div>
+            <button type="submit">✅ Registrar Turno</button>
+        </form>
+        <div id="mensajeTurno" class="mensaje"></div>
+    </div>
+
+    <div class="card">
+        <h2>📋 Tabla de Turnos Disponibles</h2>
+        <div class="tabla-turnos">
+            <div id="listaTurnos" class="cargando">Cargando turnos...</div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { registrarTurno, obtenerTurnos } from './js/conexion.js';
+    
+    // Registrar turno
+    const formTurno = document.getElementById('formRegistroTurno');
+    const mensajeDiv = document.getElementById('mensajeTurno');
+    
+    if (formTurno) {
+        formTurno.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            mensajeDiv.innerHTML = '<div class="cargando">⏳ Registrando turno...</div>';
+            
+            const datos = {
+                fecha: document.getElementById('fecha').value,
+                hora: document.getElementById('hora').value,
+                laboratorio: document.getElementById('laboratorio').value,
+                cuposTotales: parseInt(document.getElementById('cupos').value)
+            };
+            
+            const resultado = await registrarTurno(datos);
+            
+            if (resultado.success) {
+                mensajeDiv.innerHTML = '<div class="exito">✅ Turno registrado correctamente</div>';
+                formTurno.reset();
+                mostrarTurnos();
+            } else {
+                mensajeDiv.innerHTML = `<div class="error">❌ Error: ${resultado.error}</div>`;
+            }
+        });
+    }
+    
+    // Mostrar tabla de turnos
+    async function mostrarTurnos() {
+        const contenedor = document.getElementById('listaTurnos');
+        if (!contenedor) return;
+        
+        contenedor.innerHTML = '<div class="cargando">📚 Cargando turnos...</div>';
+        
+        const turnos = await obtenerTurnos();
+        
+        if (turnos.length === 0) {
+            contenedor.innerHTML = '<p>📭 No hay turnos registrados aún.</p>';
+            return;
+        }
+        
+        let html = `<table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Laboratorio</th>
+                    <th>Cupos disponibles</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        turnos.forEach(turno => {
+            const disponible = turno.cuposDisponibles || turno.cuposTotales;
+            const claseCupos = disponible > 0 ? 'cupos-disponible' : 'cupos-lleno';
+            html += `<tr>
+                <td>${turno.fecha}</td>
+                <td>${turno.hora}</td>
+                <td>${turno.laboratorio}</td>
+                <td class="${claseCupos}">${disponible}/${turno.cuposTotales}</td>
+            </tr>`;
+        });
+        
+        html += `</tbody>
+                </table>`;
+        contenedor.innerHTML = html;
+    }
+    
+    // Cargar turnos al inicio
+    mostrarTurnos();
+</script>
+
+</body>
+</html>

@@ -3,9 +3,54 @@
     "public": ".",
     "ignore": [
       "firebase.json",
-      ".firebaserc",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/index.html",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/html/index.html",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/registro",
+        "destination": "/html/registro.html"
+      },
+      {
+        "source": "/asistencia",
+        "destination": "/html/asistencia.html"
+      },
+      {
+        "source": "/materiales",
+        "destination": "/html/materiales.html"
+      },
+      {
+        "source": "/cursos",
+        "destination": "/html/cursos.html"
+      },
+      {
+        "source": "/perfil",
+        "destination": "/html/perfil.html"
+      },
+      {
+        "source": "/admin",
+        "destination": "/html/admin.html"
+      },
+      {
+        "source": "/api",
+        "destination": "/api.js"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   }
 }

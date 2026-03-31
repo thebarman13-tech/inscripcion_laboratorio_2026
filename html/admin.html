@@ -1,381 +1,1935 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DRTECNO · Panel Administrativo</title>
-<!-- CSS Global -->
-<link rel="stylesheet" href="../css/styles.css">
-<!-- Admin CSS Modular -->
-<link rel="stylesheet" href="../css/admin/admin.css">
-<link rel="stylesheet" href="../css/admin/admin-notificaciones.css">
-<link rel="stylesheet" href="../css/admin/admin-estadisticas.css">
-<link rel="stylesheet" href="../css/admin/admin-calendario.css">
-<link rel="stylesheet" href="../css/admin/admin-filtros.css">
-<link rel="stylesheet" href="../css/admin/admin-turnos.css">
-<link rel="stylesheet" href="../css/admin/admin-alumnos.css">
-<link rel="stylesheet" href="../css/admin/admin-gestion.css">
-<link rel="stylesheet" href="../css/admin/admin-archivos.css">
-<link rel="stylesheet" href="../css/admin/admin-cursos.css">
-<link rel="stylesheet" href="../css/admin/admin-config.css">
-<link rel="stylesheet" href="../css/admin/admin-visual.css">
-<!-- Librerías Externas -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR TECNO · Panel de Administración</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --bg-color: #F5F7FA;
+            --card-bg: #ffffff;
+            --text-color: #1a202c;
+            --text-light: #4a5568;
+            --navbar-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --primary: #005B9F;
+            --primary-dark: #003B6F;
+            --secondary: #00A3E0;
+            --accent: #F15A24;
+            --success: #28a745;
+            --error: #dc3545;
+            --warning: #ffc107;
+        }
+
+        body.dark {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-color: #f7fafc;
+            --text-light: #cbd5e0;
+            --navbar-bg: #2d3748;
+            --border-color: #4a5568;
+            --shadow: 0 10px 25px rgba(0,0,0,0.3);
+            --primary: #00A3E0;
+            --primary-dark: #005B9F;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 150px;
+            object-fit: contain;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Login */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-card h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .form-group input[type="file"] {
+            padding: 0.5rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .btn-small {
+            width: auto;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard */
+        .dashboard-container {
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tablas */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: var(--bg-color);
+        }
+
+        .acciones {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-editar {
+            background: var(--warning);
+            color: #333;
+            padding: 0.25rem 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-eliminar {
+            background: var(--error);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Botones de filtro */
+        .btn-filtro {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-filtro.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-filtro:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .nivel-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .nivel-inicial {
+            background: #e3f2fd;
+            color: #005B9F;
+        }
+
+        .nivel-intermedio {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .nivel-avanzado {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        body.dark .nivel-inicial {
+            background: #1a3a5c;
+            color: #90caf9;
+        }
+
+        body.dark .nivel-intermedio {
+            background: #1b5e20;
+            color: #a5d6a7;
+        }
+
+        body.dark .nivel-avanzado {
+            background: #6d1b2b;
+            color: #ef9a9a;
+        }
+
+        /* Estilos para materiales */
+        .btn-ver {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: background 0.2s;
+        }
+
+        .btn-ver:hover {
+            background: var(--primary-dark);
+        }
+
+        #listaMateriales table {
+            min-width: 600px;
+        }
+
+        #listaMateriales td {
+            vertical-align: middle;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .mensaje {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .exito {
+            background: var(--success);
+            color: white;
+        }
+
+        .error {
+            background: var(--error);
+            color: white;
+        }
+
+        .cargando {
+            background: var(--warning);
+            color: #333;
+        }
+
+        .logout-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logo-preview {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100px;
+        }
+
+        .preview-icono {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                justify-content: center;
+            }
+            .table-container {
+                font-size: 0.75rem;
+            }
+            th, td {
+                padding: 8px 6px;
+            }
+            .btn-eliminar, .btn-editar, .btn-ver {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="navbar">
+        <div class="logo" id="logoContainer">
+            <span>DR</span><span>TECNO</span> 🔧
+        </div>
+        <div class="nav-links">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="admin.html">⚙️ Admin</a>
+            <button class="theme-toggle" id="themeToggle">🌙 Modo Oscuro</button>
+        </div>
+    </div>
 
-<header>
-  <div class="logo" id="logoContainer">
-    <div id="logoContent">
-      <span>🔧 DRTECNO</span>
-      <small>Laboratorio</small>
-    </div>
-  </div>
-  
-  <div class="header-controls">
-    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
-    <nav>
-      <a href="index.html">🏠 Inicio</a>
-      <a href="registro.html">📝 Registro</a>
-      <a href="asistencia.html">📅 Asistencia</a>
-      <a href="pdf.html">📄 Materiales</a>
-      <a href="cursos.html">🎓 Cursos</a>
-      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
-      <a href="login.html">🔐 Iniciar Sesión</a>
-      <a id="btnDashboard" href="admin.html" class="active">📊 Dashboard</a>
-      <a id="btnConfig" href="admin.html?tab=configuracion">⚙️ Configuración</a>
-      <a id="btnLogin" href="admin.html?tab=login" style="display:none;">🔐 Admin</a>
-      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
-    </nav>
-  </div>
-</header>
+    <div class="container">
+        <!-- Pantalla de Login -->
+        <div id="loginPanel" class="login-container">
+            <div class="login-card">
+                <h2>🔐 Acceso Administrador</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" id="username" placeholder="DRTECNO" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn">Ingresar</button>
+                    <div id="loginError" class="mensaje" style="display:none;"></div>
+                </form>
+            </div>
+        </div>
 
-<main>
-  <!-- LOGIN SECTION -->
-  <div id="loginSection" class="admin-section" style="display:none;">
-    <div class="login-container">
-      <div class="login-card">
-        <h2>🔐 Acceso Administrador</h2>
-        <form id="formLogin">
-          <div class="form-group">
-            <label>👤 Usuario</label>
-            <input type="text" id="user" placeholder="DRTECNO" required>
-          </div>
-          <div class="form-group">
-            <label>🔒 Contraseña</label>
-            <input type="password" id="pass" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="btn-login">Ingresar</button>
-        </form>
-      </div>
-    </div>
-  </div>
-  
-  <!-- DASHBOARD SECTION -->
-  <div id="dashboardSection" class="admin-section" style="display:none;">
-    <h2>📊 Panel de Control</h2>
-    
-    <!-- NOTIFICACIONES AL ADMIN -->
-    <div class="notificaciones-section">
-      <h3>🔔 Notificaciones Recientes</h3>
-      <div id="notificacionesList" class="notificaciones-list"></div>
-    </div>
-    
-    <!-- ESTADÍSTICAS AVANZADAS -->
-    <div class="stats-avanzadas">
-      <h3>📊 Estadísticas Avanzadas</h3>
-      <div class="stats-avanzadas-grid">
-        <div class="stat-card-avanzada">
-          <div class="stat-icon">🏆</div>
-          <div class="stat-info">
-            <div class="stat-label">Alumno más activo</div>
-            <div class="stat-value" id="alumnoMasActivo">-</div>
-          </div>
-        </div>
-        <div class="stat-card-avanzada">
-          <div class="stat-icon">⏰</div>
-          <div class="stat-info">
-            <div class="stat-label">Horario más demandado</div>
-            <div class="stat-value" id="horarioMasDemandado">-</div>
-          </div>
-        </div>
-        <div class="stat-card-avanzada">
-          <div class="stat-icon">📅</div>
-          <div class="stat-info">
-            <div class="stat-label">Día con más turnos</div>
-            <div class="stat-value" id="diaMasTurnos">-</div>
-          </div>
-        </div>
-        <div class="stat-card-avanzada">
-          <div class="stat-icon">❌</div>
-          <div class="stat-info">
-            <div class="stat-label">Tasa de cancelación</div>
-            <div class="stat-value" id="tasaCancelacion">0%</div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="charts-avanzadas">
-        <div class="chart-card-avanzada">
-          <h4>🏆 Top 10 Alumnos Más Activos</h4>
-          <div id="rankingAlumnos" class="ranking-list"></div>
-        </div>
-        <div class="chart-card-avanzada">
-          <h4>⏰ Horarios con Mayor Demanda</h4>
-          <canvas id="horariosChart" style="max-height: 250px;"></canvas>
-        </div>
-      </div>
-    </div>
-    
-    <!-- ESTADÍSTICAS BÁSICAS -->
-    <div class="stats-container">
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-number" id="totalTurnos">0</div><div>Total Turnos</div></div>
-        <div class="stat-card"><div class="stat-number" id="totalAlumnos">0</div><div>Alumnos Registrados</div></div>
-        <div class="stat-card"><div class="stat-number" id="diasConTurnos">0</div><div>Días con Turnos</div></div>
-        <div class="stat-card"><div class="stat-number" id="tasaOcupacion">0%</div><div>Tasa de Ocupación</div></div>
-      </div>
-    </div>
-    
-    <!-- GRÁFICOS -->
-    <div class="charts-row">
-      <div class="chart-card"><h4>📊 Turnos por Nivel</h4><canvas id="nivelChart"></canvas></div>
-      <div class="chart-card"><h4>📈 Turnos por Motivo</h4><canvas id="motivoChart"></canvas></div>
-    </div>
-    
-    <!-- CALENDARIO MENSUAL -->
-    <div class="calendario-mensual-section">
-      <div class="calendario-header">
-        <h3>📅 Calendario Mensual</h3>
-        <div class="calendario-navegacion">
-          <button onclick="cambiarMes(-1)" class="btn-mes">◀ Mes Anterior</button>
-          <span id="mesActual" class="mes-actual"></span>
-          <button onclick="cambiarMes(1)" class="btn-mes">Mes Siguiente ▶</button>
-          <button onclick="irHoy()" class="btn-mes">📅 Hoy</button>
-        </div>
-      </div>
-      <div id="calendarioMensual" class="calendario-mensual-grid"></div>
-    </div>
-    
-    <!-- FILTROS AVANZADOS -->
-    <div class="filtros-avanzados">
-      <h3>🔍 Filtros Avanzados</h3>
-      <div class="filtros-grid">
-        <div class="filtro-group">
-          <label>📅 Rango de fechas</label>
-          <div class="fechas-range">
-            <input type="date" id="filtroFechaInicio" placeholder="Fecha inicio">
-            <span>a</span>
-            <input type="date" id="filtroFechaFin" placeholder="Fecha fin">
-          </div>
-        </div>
-        <div class="filtro-group">
-          <label>📚 Nivel</label>
-          <select id="filtroNivel">
-            <option value="todos">Todos los niveles</option>
-            <option value="Inicial">📘 Inicial</option>
-            <option value="Intermedio">📗 Intermedio</option>
-            <option value="Avanzado">📕 Avanzado</option>
-          </select>
-        </div>
-        <div class="filtro-group">
-          <label>📌 Motivo</label>
-          <select id="filtroMotivo">
-            <option value="todos">Todos los motivos</option>
-            <option>🔧 Problema en placa</option>
-            <option>💻 Software</option>
-            <option>🔄 Cambio de piezas</option>
-            <option>🔍 Diagnóstico</option>
-            <option>📝 Otro</option>
-          </select>
-        </div>
-        <div class="filtro-group">
-          <label>👤 Alumno</label>
-          <input type="text" id="filtroAlumno" placeholder="Nombre o teléfono">
-        </div>
-        <div class="filtro-buttons">
-          <button onclick="aplicarFiltros()" class="btn-filtrar">🔍 Aplicar Filtros</button>
-          <button onclick="limpiarFiltros()" class="btn-limpiar">🗑️ Limpiar Filtros</button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- TURNOS AGENDADOS -->
-    <div class="turnos-section">
-      <div class="turnos-header">
-        <h3>📅 Turnos Agendados</h3>
-        <div class="turnos-tabs">
-          <button class="tab-btn active" onclick="mostrarTabTurnos('vigentes')">📌 Vigentes</button>
-          <button class="tab-btn" onclick="mostrarTabTurnos('archivados')">📦 Archivados</button>
-        </div>
-      </div>
-      <div id="turnosVigentes" class="turnos-container active"><div id="turnosVigentesList" class="turnos-list"></div></div>
-      <div id="turnosArchivados" class="turnos-container"><div id="turnosArchivadosList" class="turnos-list"></div></div>
-    </div>
-    
-    <!-- BOTONES DE EXPORTACIÓN -->
-    <div class="export-buttons">
-      <button onclick="exportarExcel('todos')" class="btn-export">📊 Exportar Todos los Alumnos</button>
-      <button onclick="exportarExcel('Inicial')" class="btn-export nivel-inicial">📘 Exportar Alumnos Inicial</button>
-      <button onclick="exportarExcel('Intermedio')" class="btn-export nivel-intermedio">📗 Exportar Alumnos Intermedio</button>
-      <button onclick="exportarExcel('Avanzado')" class="btn-export nivel-avanzado">📕 Exportar Alumnos Avanzado</button>
-    </div>
-    
-    <!-- ALUMNOS POR NIVEL -->
-    <div class="niveles-container">
-      <div class="nivel-section"><div class="nivel-header inicial"><h3>📘 Nivel Inicial</h3><span class="badge" id="contadorInicial">0 alumnos</span></div><div id="alumnosInicial" class="alumnos-grid"></div></div>
-      <div class="nivel-section"><div class="nivel-header intermedio"><h3>📗 Nivel Intermedio</h3><span class="badge" id="contadorIntermedio">0 alumnos</span></div><div id="alumnosIntermedio" class="alumnos-grid"></div></div>
-      <div class="nivel-section"><div class="nivel-header avanzado"><h3>📕 Nivel Avanzado</h3><span class="badge" id="contadorAvanzado">0 alumnos</span></div><div id="alumnosAvanzado" class="alumnos-grid"></div></div>
-    </div>
-  </div>
-  
-  <!-- CONFIGURACIÓN SECTION -->
-  <div id="configuracionSection" class="admin-section" style="display:none;">
-    <h2>⚙️ Panel de Configuración</h2>
-    
-    <div class="config-container">
-      <!-- Configuración del Logo -->
-      <div class="config-card logo-config">
-        <h3>🖼️ Configuración del Logo</h3>
-        <p class="config-desc">Personaliza el logo que aparece en la cabecera de todas las páginas</p>
-        <div class="logo-preview-container"><div class="logo-preview-title">Vista previa del logo actual:</div><div id="logoPreview" class="logo-preview"></div></div>
-        <div class="logo-options">
-          <div class="logo-option"><h4>📁 Subir imagen</h4><p class="config-desc">Formatos permitidos: PNG, JPG, JPEG, SVG, GIF (máx 2MB)</p><input type="file" id="logoUpload" accept="image/*" class="file-input"><button onclick="subirLogo()" class="btn-subir-logo">⬆️ Subir Logo</button></div>
-          <div class="logo-option"><h4>🎨 Logo con texto</h4><p class="config-desc">Usar texto con ícono y nombre</p><div class="logo-text-config"><div class="form-group"><label>Ícono (emojis permitidos)</label><input type="text" id="logoIcon" placeholder="🔧" maxlength="5"></div><div class="form-group"><label>Nombre del laboratorio</label><input type="text" id="logoName" placeholder="DRTECNO"></div><div class="form-group"><label>Subtítulo</label><input type="text" id="logoSlogan" placeholder="Laboratorio"></div><button onclick="guardarLogoTexto()" class="btn-guardar">💾 Guardar Logo de Texto</button></div></div>
-          <div class="logo-option"><h4>🔄 Restablecer logo predeterminado</h4><button onclick="restablecerLogo()" class="btn-reset">↺ Restablecer Logo Original</button></div>
-        </div>
-      </div>
-      
-      <!-- Gestión de Alumnos -->
-      <div class="config-card gestion-alumnos">
-        <h3>👥 Gestión de Alumnos</h3>
-        <p class="config-desc">Editar o eliminar alumnos registrados</p>
-        <div class="buscar-alumno"><input type="text" id="buscarAlumnoConfig" placeholder="🔍 Buscar por nombre, apellido o teléfono..." class="search-input"></div>
-        <div id="listaAlumnosConfig" class="alumnos-gestion-list"></div>
-      </div>
-      
-      <!-- Gestión de Archivos -->
-      <div class="config-card archivos-gestion">
-        <h3>📁 Gestión de Archivos</h3>
-        <p class="config-desc">Sube, administra y organiza documentos para los alumnos</p>
-        <div class="subir-archivo">
-          <h4>📤 Subir nuevo archivo</h4>
-          <div class="form-group"><label>📄 Archivo (PDF, DOC, JPG, etc.)</label><input type="file" id="archivoSubir" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.xls,.xlsx,.zip"></div>
-          <div class="form-group"><label>📝 Nombre del archivo</label><input type="text" id="archivoNombre" placeholder="Ej: Guía de soldadura.pdf"></div>
-          <div class="form-group"><label>📋 Descripción (opcional)</label><textarea id="archivoDescripcion" rows="2" placeholder="Breve descripción del contenido..."></textarea></div>
-          <button onclick="subirArchivo()" class="btn-subir-archivo">⬆️ Subir Archivo</button>
-        </div>
-        <div class="archivos-lista"><h4>📋 Archivos disponibles</h4><div id="listaArchivosAdmin" class="archivos-admin-list"></div></div>
-      </div>
-      
-      <!-- Gestión de Cursos -->
-      <div class="config-card cursos-gestion">
-        <h3>🎓 Gestión de Cursos</h3>
-        <p class="config-desc">Sube y administra los cursos (PDF, DOC, etc.)</p>
-        <div class="subir-curso">
-          <h4>📤 Subir nuevo curso</h4>
-          <div class="form-group"><label>📄 Archivo (PDF, DOC, JPG, etc.)</label><input type="file" id="cursoSubir" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"></div>
-          <div class="form-group"><label>📝 Título del curso</label><input type="text" id="cursoTitulo" placeholder="Ej: Introducción a la Electrónica"></div>
-          <div class="form-group"><label>📋 Descripción (opcional)</label><textarea id="cursoDescripcion" rows="2" placeholder="Breve descripción del curso..."></textarea></div>
-          <button onclick="subirCurso()" class="btn-subir-curso">⬆️ Subir Curso</button>
-        </div>
-        <div class="cursos-lista"><h4>📋 Cursos disponibles</h4><div id="listaCursosAdmin" class="cursos-admin-list"></div></div>
-      </div>
-      
-      <!-- Días Hábitos -->
-      <div class="config-card">
-        <h3>📅 Días Hábitos</h3>
-        <p class="config-desc">Selecciona los días de la semana en los que se pueden reservar turnos</p>
-        <div class="dias-checkboxes" id="diasHabilesContainer">
-          <label><input type="checkbox" value="1"> Lunes</label>
-          <label><input type="checkbox" value="2"> Martes</label>
-          <label><input type="checkbox" value="3"> Miércoles</label>
-          <label><input type="checkbox" value="4"> Jueves</label>
-          <label><input type="checkbox" value="5"> Viernes</label>
-          <label><input type="checkbox" value="6"> Sábado</label>
-          <label><input type="checkbox" value="0"> Domingo</label>
-        </div>
-        <button onclick="guardarDiasHabiles()" class="btn-guardar">💾 Guardar Días Hábitos</button>
-      </div>
-      
-      <!-- Horarios de Turnos -->
-      <div class="config-card">
-        <h3>⏰ Horarios de Turnos</h3>
-        <p class="config-desc">Define los horarios disponibles (formato: HH:MM a HH:MM)</p>
-        <div id="horariosContainer">
-          <div class="horarios-list" id="horariosList"></div>
-          <div class="horarios-actions">
-            <input type="text" id="nuevoHorario" placeholder="Ej: 12:00 a 14:00" class="horario-input">
-            <button onclick="agregarHorario()" class="btn-agregar">➕ Agregar Horario</button>
-          </div>
-        </div>
-        <button onclick="guardarHorarios()" class="btn-guardar">💾 Guardar Horarios</button>
-      </div>
-      
-      <!-- Feriados -->
-      <div class="config-card">
-        <h3>📆 Feriados</h3>
-        <p class="config-desc">Fechas en las que NO se pueden reservar turnos</p>
-        <div id="feriadosContainer">
-          <div class="feriados-list" id="feriadosList"></div>
-          <div class="feriados-actions">
-            <input type="date" id="nuevoFeriado" class="feriado-input">
-            <button onclick="agregarFeriado()" class="btn-agregar">➕ Agregar Feriado</button>
-          </div>
-        </div>
-        <button onclick="guardarFeriados()" class="btn-guardar">💾 Guardar Feriados</button>
-      </div>
-      
-      <!-- Mensaje de Confirmación -->
-      <div class="config-card">
-        <h3>💬 Mensaje de Confirmación</h3>
-        <p class="config-desc">Personaliza el mensaje que ven los alumnos al reservar un turno</p>
-        <textarea id="mensajeConfirmacion" rows="8" placeholder="Escribe el mensaje de confirmación..."></textarea>
-        <button onclick="guardarMensaje()" class="btn-guardar">💾 Guardar Mensaje</button>
-      </div>
-      
-      <!-- Botón de Reset General -->
-      <div class="config-card reset-card">
-        <h3>🔄 Restablecer Configuración</h3>
-        <p class="config-desc">Vuelve a la configuración predeterminada (incluye logo)</p>
-        <button onclick="resetearConfiguracion()" class="btn-reset">⚠️ Restablecer Valores Predeterminados</button>
-      </div>
-    </div>
-  </div>
-</main>
+        <!-- Panel de Administración -->
+        <div id="adminPanel" class="dashboard-container">
+            <div class="card" style="background: var(--card-bg); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <h1>⚙️ Panel de Administración</h1>
+                    <button id="logoutBtn" class="logout-btn">🚪 Cerrar Sesión</button>
+                </div>
+                <p>Gestión completa del sistema</p>
+            </div>
 
-<div id="toast" class="toast"></div>
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAlumnosStat">0</div>
+                    <p>Total Alumnos</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTurnosStat">0</div>
+                    <p>Total Turnos</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCursosStat">0</div>
+                    <p>Cursos Activos</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMaterialesStat">0</div>
+                    <p>Materiales</p>
+                </div>
+            </div>
 
-<div id="modalEditarAlumno" class="modal">
-  <div class="modal-content" style="max-width: 500px;">
-    <div class="modal-header" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));">
-      <h2 style="color: #3b82f6;">✏️ Editar Alumno</h2>
-    </div>
-    <div class="modal-body">
-      <form id="formEditarAlumno">
-        <input type="hidden" id="editAlumnoId">
-        <div class="form-group"><label>📛 Nombre</label><input type="text" id="editNombre" placeholder="Nombre" required></div>
-        <div class="form-group"><label>📛 Apellido</label><input type="text" id="editApellido" placeholder="Apellido" required></div>
-        <div class="form-group"><label>📞 Teléfono</label><input type="tel" id="editTelefono" placeholder="Teléfono" required></div>
-        <div class="form-group"><label>📚 Nivel</label><select id="editNivel" required><option value="Inicial">📘 Inicial</option><option value="Intermedio">📗 Intermedio</option><option value="Avanzado">📕 Avanzado</option></select></div>
-        <div style="display: flex; gap: 1rem; margin-top: 1rem;"><button type="submit" class="btn-guardar" style="flex: 1;">💾 Guardar Cambios</button><button type="button" onclick="cerrarModalEditar()" class="btn-reset" style="flex: 1;">❌ Cancelar</button></div>
-      </form>
-    </div>
-  </div>
-</div>
+            <!-- Gráficos -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>📊 Alumnos por Nivel</h3>
+                    <canvas id="alumnosPorNivelChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>📅 Turnos por Semana</h3>
+                    <canvas id="turnosPorSemanaChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>📊 Turnos por Mes</h3>
+                    <canvas id="turnosPorMesChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>🎓 Cursos más Demandados</h3>
+                    <canvas id="cursosDemandadosChart"></canvas>
+                </div>
+            </div>
 
-<!-- Admin JS Modular -->
-<script src="../js/app.js"></script>
-<script src="../js/admin/admin.js"></script>
-<script src="../js/admin/admin-notificaciones.js"></script>
-<script src="../js/admin/admin-estadisticas.js"></script>
-<script src="../js/admin/admin-calendario.js"></script>
-<script src="../js/admin/admin-filtros.js"></script>
-<script src="../js/admin/admin-turnos.js"></script>
-<script src="../js/admin/admin-alumnos.js"></script>
-<script src="../js/admin/admin-archivos.js"></script>
-<script src="../js/admin/admin-cursos.js"></script>
-<script src="../js/admin/admin-config.js"></script>
+            <!-- Botones de exportación -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center;">
+                <button id="btnExportarAlumnos" class="btn btn-success btn-small">📥 Exportar Alumnos CSV</button>
+                <button id="btnExportarReservas" class="btn btn-success btn-small">📥 Exportar Reservas CSV</button>
+                <button id="btnExportarTurnos" class="btn btn-success btn-small">📥 Exportar Turnos CSV</button>
+                <button id="btnExportarCursos" class="btn btn-success btn-small">📥 Exportar Cursos CSV</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="alumnos">👥 Alumnos</button>
+                <button class="tab-btn" data-tab="turnos">📅 Turnos</button>
+                <button class="tab-btn" data-tab="cursos">🎓 Cursos</button>
+                <button class="tab-btn" data-tab="materiales">📚 Materiales</button>
+                <button class="tab-btn" data-tab="botones">🎨 Botones</button>
+                <button class="tab-btn" data-tab="configuracion">⚙️ Configuración</button>
+                <button class="tab-btn" data-tab="terminos">📜 Términos</button>
+            </div>
+
+            <!-- Tab: Alumnos -->
+            <div id="tab-alumnos" class="tab-content active">
+                <div class="card">
+                    <h2>👥 Listado de Alumnos</h2>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                        <button class="btn-filtro active" data-nivel="todos">📋 Todos</button>
+                        <button class="btn-filtro" data-nivel="Inicial">📘 Inicial</button>
+                        <button class="btn-filtro" data-nivel="Intermedio">📙 Intermedio</button>
+                        <button class="btn-filtro" data-nivel="Avanzado">📕 Avanzado</button>
+                    </div>
+                    <div id="listaAlumnos" class="table-container">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Tab: Turnos -->
+            <div id="tab-turnos" class="tab-content">
+                <div class="card">
+                    <h2>📅 Gestión de Turnos</h2>
+                    <button id="btnAgregarTurno" class="btn btn-success btn-small" style="width: auto; margin-bottom: 1rem;">+ Agregar Turno</button>
+                    <div id="listaTurnos" class="table-container">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Tab: Cursos -->
+            <div id="tab-cursos" class="tab-content">
+                <div class="card">
+                    <h2>🎓 Gestión de Cursos</h2>
+                    <button id="btnAgregarCurso" class="btn btn-success btn-small" style="width: auto; margin-bottom: 1rem;">+ Agregar Curso</button>
+                    <div id="listaCursos" class="table-container">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Tab: Materiales -->
+            <div id="tab-materiales" class="tab-content">
+                <div class="card">
+                    <h2>📚 Gestión de Materiales</h2>
+                    <button id="btnAgregarMaterial" class="btn btn-success btn-small" style="width: auto; margin-bottom: 1rem;">+ Agregar Material</button>
+                    <div id="listaMateriales" class="table-container">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Tab: Botones -->
+            <div id="tab-botones" class="tab-content">
+                <div class="card">
+                    <h2>🎨 Personalización de Botones del Inicio</h2>
+                    <p style="margin-bottom: 1rem;">Configurá la imagen, nombre y descripción de cada botón de la página principal.</p>
+                    <div id="listaBotones" class="table-container">Cargando...</div>
+                    <div id="mensajeBotones" class="mensaje"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Configuración -->
+            <div id="tab-configuracion" class="tab-content">
+                <div class="card">
+                    <h2>⚙️ Configuración General</h2>
+                    <div class="form-group">
+                        <label>📅 Días de asistencia (separados por coma)</label>
+                        <input type="text" id="diasAsistencia" placeholder="Ej: Lunes, Martes, Miércoles, Jueves, Viernes">
+                        <small>Días en los que se pueden reservar turnos</small>
+                    </div>
+                    <div class="form-group">
+                        <label>📆 Feriados (formato YYYY-MM-DD, separados por coma)</label>
+                        <input type="text" id="feriados" placeholder="Ej: 2025-01-01, 2025-05-01">
+                        <small>Fechas en las que NO se pueden reservar turnos</small>
+                    </div>
+                    <div class="form-group">
+                        <label>👥 Cupos por turno (predeterminado)</label>
+                        <input type="number" id="cuposPorTurno" min="1" max="50" value="5">
+                        <small>Cupo máximo que tendrán los nuevos turnos</small>
+                    </div>
+                    <h3 style="margin-top: 1rem;">🖼️ Logo del Sistema</h3>
+                    <div class="form-group">
+                        <label>Subir logo desde PC</label>
+                        <input type="file" id="logoFile" accept="image/*">
+                    </div>
+                    <div class="logo-preview">
+                        <img id="previewImg" src="" alt="Vista previa" style="max-width: 100%; max-height: 100px;">
+                    </div>
+                    <button id="btnGuardarLogo" class="btn btn-small" style="width: auto;">💾 Guardar Logo</button>
+                    <button id="btnEliminarLogo" class="btn btn-danger btn-small" style="width: auto;">🗑️ Eliminar Logo</button>
+                    <button id="btnGuardarConfig" class="btn" style="margin-top: 1rem;">💾 Guardar Configuración</button>
+                    <div id="mensajeConfig" class="mensaje"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Términos -->
+            <div id="tab-terminos" class="tab-content">
+                <div class="card">
+                    <h2>📜 Términos y Condiciones</h2>
+                    <p style="margin-bottom: 1rem;">Texto que aparece al reservar turno</p>
+                    <textarea id="terminosTexto" rows="12" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color);"></textarea>
+                    <button id="btnGuardarTerminos" class="btn btn-small" style="width: auto; margin-top: 1rem;">💾 Guardar Términos</button>
+                    <div id="mensajeTerminos" class="mensaje"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Turno -->
+    <div id="modalTurno" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTurnoTitulo">Agregar Turno</h2>
+            <div class="form-group">
+                <label>📅 Fecha *</label>
+                <input type="date" id="turnoFecha" required>
+            </div>
+            <div class="form-group">
+                <label>⏰ Horario *</label>
+                <select id="turnoHorario">
+                    <option value="12-14">12:00 a 14:00</option>
+                    <option value="14-16">14:00 a 16:00</option>
+                    <option value="16-18">16:00 a 18:00</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>👥 Cupos totales *</label>
+                <input type="number" id="turnoCupos" min="1" max="50" value="5">
+                <small>Cantidad máxima de alumnos que pueden reservar este turno</small>
+            </div>
+            <button id="btnGuardarTurno" class="btn">💾 Guardar Turno</button>
+            <button id="btnCancelarTurno" class="btn btn-danger" style="margin-top: 0.5rem;">❌ Cancelar</button>
+            <div id="mensajeTurno" class="mensaje"></div>
+        </div>
+    </div>
+
+    <!-- Modal para Curso -->
+    <div id="modalCurso" class="modal">
+        <div class="modal-content">
+            <h2 id="modalCursoTitulo">Agregar Curso</h2>
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="cursoNombre" placeholder="Ej: Electrónica Básica">
+            </div>
+            <div class="form-group">
+                <label>Nivel</label>
+                <select id="cursoNivel">
+                    <option value="Inicial">Inicial</option>
+                    <option value="Intermedio">Intermedio</option>
+                    <option value="Avanzado">Avanzado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Fecha Inicio</label>
+                <input type="date" id="cursoFechaInicio">
+            </div>
+            <div class="form-group">
+                <label>Fecha Fin</label>
+                <input type="date" id="cursoFechaFin">
+            </div>
+            <div class="form-group">
+                <label>Horario</label>
+                <input type="text" id="cursoHorario" placeholder="Ej: Martes y Jueves 14:00 a 16:00">
+            </div>
+            <div class="form-group">
+                <label>Duración</label>
+                <input type="text" id="cursoDuracion" placeholder="Ej: 10 clases">
+            </div>
+            <div class="form-group">
+                <label>Cupos totales</label>
+                <input type="number" id="cursoCupos" min="1" value="15">
+            </div>
+            <div class="form-group">
+                <label>Instructor</label>
+                <input type="text" id="cursoInstructor" placeholder="Ej: Ing. Juan Pérez">
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="cursoDescripcion" rows="3" placeholder="Descripción del curso..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>URL de imagen (opcional)</label>
+                <input type="text" id="cursoImagen" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Estado</label>
+                <select id="cursoEstado">
+                    <option value="activo">Activo</option>
+                    <option value="cancelado">Cancelado</option>
+                    <option value="finalizado">Finalizado</option>
+                </select>
+            </div>
+            <button id="btnGuardarCurso" class="btn">💾 Guardar</button>
+            <button id="btnCancelarCurso" class="btn btn-danger" style="margin-top: 0.5rem;">Cancelar</button>
+            <div id="mensajeCurso" class="mensaje"></div>
+        </div>
+    </div>
+
+    <!-- Modal para Material -->
+    <div id="modalMaterial" class="modal">
+        <div class="modal-content">
+            <h2 id="modalMaterialTitulo">Agregar Material</h2>
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="materialNombre" placeholder="Ej: Guía de Laboratorio">
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="materialDescripcion" rows="3" placeholder="Descripción..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Nivel</label>
+                <select id="materialNivel">
+                    <option value="inicial">Inicial</option>
+                    <option value="intermedio">Intermedio</option>
+                    <option value="avanzado">Avanzado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Subir archivo (PDF)</label>
+                <input type="file" id="materialArchivo" accept=".pdf">
+            </div>
+            <div class="form-group">
+                <label>O URL del archivo</label>
+                <input type="text" id="materialUrl" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Tipo</label>
+                <input type="text" id="materialTipo" placeholder="PDF, Video, etc." value="PDF">
+            </div>
+            <button id="btnGuardarMaterial" class="btn">💾 Guardar</button>
+            <button id="btnCancelarMaterial" class="btn btn-danger" style="margin-top: 0.5rem;">Cancelar</button>
+            <div id="mensajeMaterial" class="mensaje"></div>
+        </div>
+    </div>
+
+    <!-- Modal para Botón -->
+    <div id="modalBoton" class="modal">
+        <div class="modal-content">
+            <h2>Editar Botón</h2>
+            <input type="hidden" id="botonId">
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="botonNombre" placeholder="Nombre del botón">
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <input type="text" id="botonDescripcion" placeholder="Descripción corta">
+            </div>
+            <div class="form-group">
+                <label>URL destino</label>
+                <input type="text" id="botonUrl" placeholder="ej: registro.html">
+            </div>
+            <div class="form-group">
+                <label>Emoji (si no usa imagen)</label>
+                <input type="text" id="botonEmoji" placeholder="📝" maxlength="2">
+            </div>
+            <div class="form-group">
+                <label>URL de imagen (opcional)</label>
+                <input type="text" id="botonImagenUrl" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Subir imagen desde PC</label>
+                <input type="file" id="botonArchivo" accept="image/*">
+            </div>
+            <div id="previewBoton" style="text-align: center; margin: 1rem 0;">
+                <img id="previewBotonImg" src="" style="max-width: 100px; max-height: 100px; display: none;">
+            </div>
+            <button id="btnGuardarBoton" class="btn">💾 Guardar</button>
+            <button id="btnCancelarBoton" class="btn btn-danger" style="margin-top: 0.5rem;">Cancelar</button>
+            <div id="mensajeBoton" class="mensaje"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>DR TECNO Laboratorio - Sistema de Gestión de Turnos</p>
+    </footer>
+
+    <script type="module">
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { db, storage } from '../js/conexion.js';
+
+        // ========== VARIABLES GLOBALES ==========
+        let nivelFiltroActual = 'todos';
+        let turnoEditandoId = null;
+        let cursoEditandoId = null;
+        let materialEditandoId = null;
+        let botonEditandoId = null;
+        
+        // Gráficos
+        let alumnosPorNivelChart = null;
+        let turnosPorSemanaChart = null;
+        let turnosPorMesChart = null;
+        let cursosDemandadosChart = null;
+
+        // ========== MODO OSCURO ==========
+        const themeToggle = document.getElementById('themeToggle');
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+                themeToggle.textContent = '☀️ Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                themeToggle.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme');
+        setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        });
+
+        // ========== LOGIN ==========
+        const loginPanel = document.getElementById('loginPanel');
+        const adminPanel = document.getElementById('adminPanel');
+        
+        function checkLoginStatus() {
+            const loggedIn = sessionStorage.getItem('adminLoggedIn');
+            if (loggedIn === 'true') {
+                loginPanel.style.display = 'none';
+                adminPanel.style.display = 'block';
+                cargarTodosLosDatos();
+            } else {
+                loginPanel.style.display = 'flex';
+                adminPanel.style.display = 'none';
+            }
+        }
+        
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'DRTECNO' && password === 'laboratorio2026') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                checkLoginStatus();
+            } else {
+                document.getElementById('loginError').innerHTML = '<div class="error">❌ Usuario o contraseña incorrectos</div>';
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+        
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('adminLoggedIn');
+            checkLoginStatus();
+        });
+
+        // ========== CARGAR TODOS LOS DATOS ==========
+        async function cargarTodosLosDatos() {
+            await cargarEstadisticas();
+            await cargarGraficosAvanzados();
+            await cargarAlumnos();
+            await cargarTurnos();
+            await cargarCursos();
+            await cargarMateriales();
+            await cargarConfiguracion();
+            await cargarTerminos();
+            await cargarLogo();
+            configurarFiltros();
+            await cargarBotones();
+            await crearBotonesPorDefecto();
+        }
+
+        // ========== ESTADÍSTICAS ==========
+        async function cargarEstadisticas() {
+            const alumnosSnap = await getDocs(collection(db, "alumnos"));
+            const reservasSnap = await getDocs(collection(db, "reservas"));
+            const cursosSnap = await getDocs(collection(db, "cursos"));
+            const materialesSnap = await getDocs(collection(db, "materiales"));
+            
+            document.getElementById('totalAlumnosStat').innerText = alumnosSnap.size;
+            document.getElementById('totalTurnosStat').innerText = reservasSnap.size;
+            document.getElementById('totalCursosStat').innerText = cursosSnap.size;
+            document.getElementById('totalMaterialesStat').innerText = materialesSnap.size;
+        }
+
+        // ========== GRÁFICOS AVANZADOS ==========
+        async function cargarGraficosAvanzados() {
+            // Alumnos por nivel
+            const alumnosSnap = await getDocs(collection(db, "alumnos"));
+            const niveles = { Inicial: 0, Intermedio: 0, Avanzado: 0 };
+            alumnosSnap.forEach(doc => {
+                const nivel = doc.data().nivel || 'Inicial';
+                if (niveles[nivel] !== undefined) niveles[nivel]++;
+            });
+            
+            if (alumnosPorNivelChart) alumnosPorNivelChart.destroy();
+            alumnosPorNivelChart = new Chart(document.getElementById('alumnosPorNivelChart'), {
+                type: 'bar',
+                data: { labels: ['Inicial', 'Intermedio', 'Avanzado'], datasets: [{ label: 'Alumnos', data: [niveles.Inicial, niveles.Intermedio, niveles.Avanzado], backgroundColor: ['#005B9F', '#00A3E0', '#F15A24'] }] },
+                options: { responsive: true }
+            });
+            
+            // Turnos por semana
+            const reservasSnap = await getDocs(collection(db, "reservas"));
+            const semanas = {};
+            const hoy = new Date();
+            for (let i = 0; i < 4; i++) {
+                const semana = `Semana ${4-i}`;
+                semanas[semana] = 0;
+            }
+            reservasSnap.forEach(doc => {
+                const fecha = new Date(doc.data().fechaReserva);
+                const diff = Math.floor((hoy - fecha) / (1000 * 60 * 60 * 24 * 7));
+                if (diff >= 0 && diff < 4) semanas[`Semana ${4-diff}`]++;
+            });
+            
+            if (turnosPorSemanaChart) turnosPorSemanaChart.destroy();
+            turnosPorSemanaChart = new Chart(document.getElementById('turnosPorSemanaChart'), {
+                type: 'line',
+                data: { labels: Object.keys(semanas), datasets: [{ label: 'Turnos', data: Object.values(semanas), borderColor: '#005B9F', fill: true }] },
+                options: { responsive: true }
+            });
+            
+            // Turnos por mes
+            const turnosPorMes = new Array(12).fill(0);
+            reservasSnap.forEach(doc => {
+                const mes = new Date(doc.data().fechaReserva).getMonth();
+                turnosPorMes[mes]++;
+            });
+            
+            if (turnosPorMesChart) turnosPorMesChart.destroy();
+            turnosPorMesChart = new Chart(document.getElementById('turnosPorMesChart'), {
+                type: 'bar',
+                data: { labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'], datasets: [{ label: 'Turnos', data: turnosPorMes, backgroundColor: '#00A3E0' }] },
+                options: { responsive: true }
+            });
+            
+            // Cursos más demandados
+            const inscripcionesSnap = await getDocs(collection(db, "inscripciones"));
+            const cursosCount = {};
+            inscripcionesSnap.forEach(doc => {
+                const cursoNombre = doc.data().cursoNombre;
+                cursosCount[cursoNombre] = (cursosCount[cursoNombre] || 0) + 1;
+            });
+            
+            if (cursosDemandadosChart) cursosDemandadosChart.destroy();
+            cursosDemandadosChart = new Chart(document.getElementById('cursosDemandadosChart'), {
+                type: 'pie',
+                data: { labels: Object.keys(cursosCount), datasets: [{ data: Object.values(cursosCount), backgroundColor: ['#005B9F', '#00A3E0', '#F15A24', '#28a745', '#ffc107'] }] },
+                options: { responsive: true }
+            });
+        }
+
+        // ========== EXPORTAR CSV ==========
+        function exportarCSV(data, filename) {
+            const csv = data.map(row => Object.values(row).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+        
+        document.getElementById('btnExportarAlumnos').onclick = async () => {
+            const alumnos = [];
+            const snapshot = await getDocs(collection(db, "alumnos"));
+            snapshot.forEach(doc => alumnos.push({ Nombre: doc.data().nombreCompleto, Telefono: doc.data().telefono, Nivel: doc.data().nivel, FechaRegistro: doc.data().fechaRegistro }));
+            exportarCSV(alumnos, 'alumnos.csv');
+        };
+        
+        document.getElementById('btnExportarReservas').onclick = async () => {
+            const reservas = [];
+            const snapshot = await getDocs(collection(db, "reservas"));
+            snapshot.forEach(doc => reservas.push({ Alumno: doc.data().alumnoNombre, Telefono: doc.data().telefono, Fecha: doc.data().fecha, Horario: doc.data().horarioLabel, FechaReserva: doc.data().fechaReserva }));
+            exportarCSV(reservas, 'reservas.csv');
+        };
+        
+        document.getElementById('btnExportarTurnos').onclick = async () => {
+            const turnos = [];
+            const snapshot = await getDocs(collection(db, "turnos"));
+            snapshot.forEach(doc => turnos.push({ Fecha: doc.data().fecha, Horario: doc.data().horarioLabel, Cupos: `${doc.data().cuposDisponibles}/${doc.data().cuposTotales}` }));
+            exportarCSV(turnos, 'turnos.csv');
+        };
+        
+        document.getElementById('btnExportarCursos').onclick = async () => {
+            const cursos = [];
+            const snapshot = await getDocs(collection(db, "cursos"));
+            snapshot.forEach(doc => cursos.push({ Nombre: doc.data().nombre, Nivel: doc.data().nivel, FechaInicio: doc.data().fechaInicio, Horario: doc.data().horario, Cupos: `${doc.data().cuposDisponibles}/${doc.data().cuposTotales}` }));
+            exportarCSV(cursos, 'cursos.csv');
+        };
+
+        // ========== CRUD TURNOS ==========
+        async function cargarTurnos() {
+            const container = document.getElementById('listaTurnos');
+            container.innerHTML = '<div class="cargando">📡 Cargando turnos...</div>';
+            
+            try {
+                const snapshot = await getDocs(collection(db, "turnos"));
+                const turnos = [];
+                snapshot.forEach(doc => turnos.push({ id: doc.id, ...doc.data() }));
+                
+                if (turnos.length === 0) {
+                    container.innerHTML = '<p>No hay turnos creados. Usá el botón "+ Agregar Turno" para crear uno.</p>';
+                    return;
+                }
+                
+                turnos.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+                
+                let html = `<tr>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Horario</th>
+                            <th>Cupos Totales</th>
+                            <th>Cupos Disponibles</th>
+                            <th>Reservas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+                
+                for (const turno of turnos) {
+                    html += `<tr>
+                        <td>${turno.fecha || '-'}</td>
+                        <td>${turno.horarioLabel || turno.horarioId || '-'}</td>
+                        <td>${turno.cuposTotales || 0}</td>
+                        <td>${turno.cuposDisponibles || 0}</td>
+                        <td>${turno.reservas?.length || 0}</td>
+                        <td class="acciones">
+                            <button class="btn-editar" onclick="window.editarTurno('${turno.id}')">✏️ Editar</button>
+                            <button class="btn-eliminar" onclick="window.eliminarTurno('${turno.id}')">🗑️ Eliminar</button>
+                        </td>
+                    </tr>`;
+                }
+                
+                html += `</tbody>
+                </table>`;
+                container.innerHTML = html;
+                
+                window.editarTurno = async (id) => {
+                    try {
+                        const docRef = doc(db, "turnos", id);
+                        const docSnap = await getDoc(docRef);
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            turnoEditandoId = id;
+                            document.getElementById('turnoFecha').value = data.fecha || '';
+                            document.getElementById('turnoHorario').value = data.horarioId || '12-14';
+                            document.getElementById('turnoCupos').value = data.cuposTotales || 5;
+                            document.getElementById('modalTurnoTitulo').innerText = '✏️ Editar Turno';
+                            document.getElementById('modalTurno').style.display = 'flex';
+                        }
+                    } catch (error) {
+                        console.error("Error al editar:", error);
+                        alert("Error al cargar el turno para editar");
+                    }
+                };
+                
+                window.eliminarTurno = async (id) => {
+                    if (confirm('¿Eliminar este turno?')) {
+                        try {
+                            await deleteDoc(doc(db, "turnos", id));
+                            await cargarTurnos();
+                            await cargarEstadisticas();
+                            await cargarGraficosAvanzados();
+                            mostrarMensajeTurno('✅ Turno eliminado correctamente', 'exito');
+                        } catch (error) {
+                            console.error("Error al eliminar:", error);
+                            alert("Error al eliminar el turno");
+                        }
+                    }
+                };
+                
+            } catch (error) {
+                console.error("Error cargando turnos:", error);
+                container.innerHTML = '<div class="error">Error al cargar los turnos</div>';
+            }
+        }
+
+        function mostrarMensajeTurno(msg, tipo) {
+            const mensajeDiv = document.getElementById('mensajeTurno');
+            if (mensajeDiv) {
+                mensajeDiv.innerHTML = `<div class="${tipo}">${msg}</div>`;
+                setTimeout(() => {
+                    if (mensajeDiv) mensajeDiv.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        document.getElementById('btnAgregarTurno').onclick = () => {
+            turnoEditandoId = null;
+            document.getElementById('turnoFecha').value = '';
+            document.getElementById('turnoHorario').value = '12-14';
+            document.getElementById('turnoCupos').value = 5;
+            document.getElementById('modalTurnoTitulo').innerText = '➕ Agregar Turno';
+            document.getElementById('modalTurno').style.display = 'flex';
+        };
+
+        document.getElementById('btnGuardarTurno').onclick = async () => {
+            const fecha = document.getElementById('turnoFecha').value;
+            const horarioId = document.getElementById('turnoHorario').value;
+            const horarioLabel = document.getElementById('turnoHorario').options[document.getElementById('turnoHorario').selectedIndex]?.text || horarioId;
+            const cuposTotales = parseInt(document.getElementById('turnoCupos').value);
+            
+            if (!fecha) {
+                document.getElementById('mensajeTurno').innerHTML = '<div class="error">❌ La fecha es obligatoria</div>';
+                return;
+            }
+            
+            if (cuposTotales < 1 || isNaN(cuposTotales)) {
+                document.getElementById('mensajeTurno').innerHTML = '<div class="error">❌ Los cupos deben ser al menos 1</div>';
+                return;
+            }
+            
+            const data = {
+                fecha: fecha,
+                horarioId: horarioId,
+                horarioLabel: horarioLabel,
+                cuposTotales: cuposTotales,
+                cuposDisponibles: cuposTotales,
+                reservas: [],
+                fechaCreacion: new Date().toISOString()
+            };
+            
+            document.getElementById('mensajeTurno').innerHTML = '<div class="cargando">📡 Guardando turno...</div>';
+            
+            try {
+                if (turnoEditandoId) {
+                    await updateDoc(doc(db, "turnos", turnoEditandoId), data);
+                    mostrarMensajeTurno('✅ Turno actualizado correctamente', 'exito');
+                } else {
+                    await addDoc(collection(db, "turnos"), data);
+                    mostrarMensajeTurno('✅ Turno agregado correctamente', 'exito');
+                }
+                
+                document.getElementById('modalTurno').style.display = 'none';
+                document.getElementById('mensajeTurno').innerHTML = '';
+                await cargarTurnos();
+                await cargarEstadisticas();
+                await cargarGraficosAvanzados();
+                
+            } catch (error) {
+                console.error("Error al guardar turno:", error);
+                document.getElementById('mensajeTurno').innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+
+        document.getElementById('btnCancelarTurno').onclick = () => {
+            document.getElementById('modalTurno').style.display = 'none';
+            document.getElementById('mensajeTurno').innerHTML = '';
+        };
+
+        // ========== CRUD CURSOS ==========
+        async function cargarCursos() {
+            const container = document.getElementById('listaCursos');
+            container.innerHTML = '<div class="cargando">📡 Cargando cursos...</div>';
+            const snapshot = await getDocs(collection(db, "cursos"));
+            const cursos = [];
+            snapshot.forEach(doc => cursos.push({ id: doc.id, ...doc.data() }));
+            
+            if (cursos.length === 0) {
+                container.innerHTML = '<p>No hay cursos creados.</p>';
+                return;
+            }
+            
+            let html = `<table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Nivel</th>
+                        <th>Fechas</th>
+                        <th>Horario</th>
+                        <th>Cupos</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            for (const curso of cursos) {
+                html += `<tr>
+                    <td>${curso.nombre || '-'}</td>
+                    <td>${curso.nivel || '-'}</td>
+                    <td>${curso.fechaInicio || '-'} al ${curso.fechaFin || '-'}</td>
+                    <td>${curso.horario || '-'}</td>
+                    <td>${curso.cuposDisponibles}/${curso.cuposTotales}</td>
+                    <td><span style="background: ${curso.estado === 'activo' ? '#28a745' : curso.estado === 'cancelado' ? '#dc3545' : '#ffc107'}; color: white; padding: 0.25rem 0.5rem; border-radius: 5px;">${curso.estado || 'activo'}</span></td>
+                    <td class="acciones">
+                        <button class="btn-editar" onclick="window.editarCurso('${curso.id}')">✏️ Editar</button>
+                        <button class="btn-eliminar" onclick="window.eliminarCurso('${curso.id}')">🗑️ Eliminar</button>
+                    </td>
+                </tr>`;
+            }
+            
+            html += `</tbody>
+            </table>`;
+            container.innerHTML = html;
+            
+            window.editarCurso = async (id) => {
+                const docRef = doc(db, "cursos", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    cursoEditandoId = id;
+                    document.getElementById('cursoNombre').value = data.nombre || '';
+                    document.getElementById('cursoNivel').value = data.nivel || 'Inicial';
+                    document.getElementById('cursoFechaInicio').value = data.fechaInicio || '';
+                    document.getElementById('cursoFechaFin').value = data.fechaFin || '';
+                    document.getElementById('cursoHorario').value = data.horario || '';
+                    document.getElementById('cursoDuracion').value = data.duracion || '';
+                    document.getElementById('cursoCupos').value = data.cuposTotales || 15;
+                    document.getElementById('cursoInstructor').value = data.instructores || '';
+                    document.getElementById('cursoDescripcion').value = data.descripcion || '';
+                    document.getElementById('cursoImagen').value = data.imagen || '';
+                    document.getElementById('cursoEstado').value = data.estado || 'activo';
+                    document.getElementById('modalCursoTitulo').innerText = 'Editar Curso';
+                    document.getElementById('modalCurso').style.display = 'flex';
+                }
+            };
+            
+            window.eliminarCurso = async (id) => {
+                if (confirm('¿Eliminar este curso?')) {
+                    await deleteDoc(doc(db, "cursos", id));
+                    cargarCursos();
+                    cargarEstadisticas();
+                    cargarGraficosAvanzados();
+                }
+            };
+        }
+        
+        document.getElementById('btnAgregarCurso').onclick = () => {
+            cursoEditandoId = null;
+            document.getElementById('cursoNombre').value = '';
+            document.getElementById('cursoNivel').value = 'Inicial';
+            document.getElementById('cursoFechaInicio').value = '';
+            document.getElementById('cursoFechaFin').value = '';
+            document.getElementById('cursoHorario').value = '';
+            document.getElementById('cursoDuracion').value = '';
+            document.getElementById('cursoCupos').value = 15;
+            document.getElementById('cursoInstructor').value = '';
+            document.getElementById('cursoDescripcion').value = '';
+            document.getElementById('cursoImagen').value = '';
+            document.getElementById('cursoEstado').value = 'activo';
+            document.getElementById('modalCursoTitulo').innerText = 'Agregar Curso';
+            document.getElementById('modalCurso').style.display = 'flex';
+        };
+        
+        document.getElementById('btnGuardarCurso').onclick = async () => {
+            const cupos = parseInt(document.getElementById('cursoCupos').value);
+            const data = {
+                nombre: document.getElementById('cursoNombre').value,
+                nivel: document.getElementById('cursoNivel').value,
+                fechaInicio: document.getElementById('cursoFechaInicio').value,
+                fechaFin: document.getElementById('cursoFechaFin').value,
+                horario: document.getElementById('cursoHorario').value,
+                duracion: document.getElementById('cursoDuracion').value,
+                cuposTotales: cupos,
+                cuposDisponibles: cupos,
+                instructores: document.getElementById('cursoInstructor').value,
+                descripcion: document.getElementById('cursoDescripcion').value,
+                imagen: document.getElementById('cursoImagen').value,
+                estado: document.getElementById('cursoEstado').value
+            };
+            if (!data.nombre) { 
+                document.getElementById('mensajeCurso').innerHTML = '<div class="error">El nombre es obligatorio</div>'; 
+                return; 
+            }
+            try {
+                if (cursoEditandoId) {
+                    await updateDoc(doc(db, "cursos", cursoEditandoId), data);
+                } else {
+                    await addDoc(collection(db, "cursos"), data);
+                }
+                document.getElementById('modalCurso').style.display = 'none';
+                cargarCursos();
+                cargarEstadisticas();
+                cargarGraficosAvanzados();
+            } catch (error) {
+                document.getElementById('mensajeCurso').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        };
+        
+        document.getElementById('btnCancelarCurso').onclick = () => {
+            document.getElementById('modalCurso').style.display = 'none';
+        };
+
+        // ========== CRUD MATERIALES ==========
+        async function cargarMateriales() {
+            const container = document.getElementById('listaMateriales');
+            container.innerHTML = '<div class="cargando">📡 Cargando materiales...</div>';
+            const snapshot = await getDocs(collection(db, "materiales"));
+            const materiales = [];
+            snapshot.forEach(doc => materiales.push({ id: doc.id, ...doc.data() }));
+            
+            const ordenNivel = { 'inicial': 1, 'intermedio': 2, 'avanzado': 3 };
+            materiales.sort((a, b) => {
+                const nivelA = ordenNivel[a.nivel] || 99;
+                const nivelB = ordenNivel[b.nivel] || 99;
+                if (nivelA !== nivelB) return nivelA - nivelB;
+                return (a.nombre || '').localeCompare(b.nombre || '');
+            });
+            
+            if (materiales.length === 0) {
+                container.innerHTML = '<p>No hay materiales cargados.</p>';
+                return;
+            }
+            
+            let html = `<tr>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Nivel</th>
+                        <th>Archivo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            for (const mat of materiales) {
+                let nivelClase = '';
+                let nivelTexto = '';
+                if (mat.nivel === 'inicial') {
+                    nivelClase = 'nivel-inicial';
+                    nivelTexto = 'Inicial';
+                } else if (mat.nivel === 'intermedio') {
+                    nivelClase = 'nivel-intermedio';
+                    nivelTexto = 'Intermedio';
+                } else if (mat.nivel === 'avanzado') {
+                    nivelClase = 'nivel-avanzado';
+                    nivelTexto = 'Avanzado';
+                } else {
+                    nivelClase = 'nivel-inicial';
+                    nivelTexto = mat.nivel || 'Inicial';
+                }
+                
+                let descripcion = mat.descripcion || '-';
+                if (descripcion.length > 60) {
+                    descripcion = descripcion.substring(0, 60) + '...';
+                }
+                
+                html += `<tr>
+                    <td><strong>${mat.nombre || '-'}</strong></td>
+                    <td>${descripcion}</td>
+                    <td><span class="nivel-badge ${nivelClase}">${nivelTexto}</span></td>
+                    <td><a href="${mat.url || '#'}" class="btn-ver" target="_blank">📄 Ver</a></td>
+                    <td class="acciones">
+                        <button class="btn-editar" onclick="window.editarMaterial('${mat.id}')">✏️ Editar</button>
+                        <button class="btn-eliminar" onclick="window.eliminarMaterial('${mat.id}')">🗑️ Eliminar</button>
+                    </td>
+                </tr>`;
+            }
+            
+            html += `</tbody>
+            </table>`;
+            container.innerHTML = html;
+            
+            window.editarMaterial = async (id) => {
+                const docRef = doc(db, "materiales", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    materialEditandoId = id;
+                    document.getElementById('materialNombre').value = data.nombre || '';
+                    document.getElementById('materialDescripcion').value = data.descripcion || '';
+                    document.getElementById('materialNivel').value = data.nivel || 'inicial';
+                    document.getElementById('materialUrl').value = data.url || '';
+                    document.getElementById('materialTipo').value = data.tipo || 'PDF';
+                    document.getElementById('materialArchivo').value = '';
+                    document.getElementById('modalMaterialTitulo').innerText = 'Editar Material';
+                    document.getElementById('modalMaterial').style.display = 'flex';
+                }
+            };
+            
+            window.eliminarMaterial = async (id) => {
+                if (confirm('¿Eliminar este material?')) {
+                    await deleteDoc(doc(db, "materiales", id));
+                    cargarMateriales();
+                    cargarEstadisticas();
+                }
+            };
+        }
+        
+        document.getElementById('btnAgregarMaterial').onclick = () => {
+            materialEditandoId = null;
+            document.getElementById('materialNombre').value = '';
+            document.getElementById('materialDescripcion').value = '';
+            document.getElementById('materialNivel').value = 'inicial';
+            document.getElementById('materialUrl').value = '';
+            document.getElementById('materialTipo').value = 'PDF';
+            document.getElementById('materialArchivo').value = '';
+            document.getElementById('modalMaterialTitulo').innerText = 'Agregar Material';
+            document.getElementById('modalMaterial').style.display = 'flex';
+        };
+        
+        document.getElementById('btnGuardarMaterial').onclick = async () => {
+            const archivo = document.getElementById('materialArchivo').files[0];
+            let url = document.getElementById('materialUrl').value;
+            
+            if (archivo) {
+                const storageRef = ref(storage, `materiales/${Date.now()}_${archivo.name}`);
+                await uploadBytes(storageRef, archivo);
+                url = await getDownloadURL(storageRef);
+            }
+            
+            const data = {
+                nombre: document.getElementById('materialNombre').value,
+                descripcion: document.getElementById('materialDescripcion').value,
+                nivel: document.getElementById('materialNivel').value,
+                url: url,
+                tipo: document.getElementById('materialTipo').value
+            };
+            if (!data.nombre) { 
+                document.getElementById('mensajeMaterial').innerHTML = '<div class="error">El nombre es obligatorio</div>'; 
+                return; 
+            }
+            if (!url) { 
+                document.getElementById('mensajeMaterial').innerHTML = '<div class="error">Debes subir un archivo o proporcionar una URL</div>'; 
+                return; 
+            }
+            
+            try {
+                if (materialEditandoId) {
+                    await updateDoc(doc(db, "materiales", materialEditandoId), data);
+                } else {
+                    await addDoc(collection(db, "materiales"), data);
+                }
+                document.getElementById('modalMaterial').style.display = 'none';
+                cargarMateriales();
+                cargarEstadisticas();
+            } catch (error) {
+                document.getElementById('mensajeMaterial').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        };
+        
+        document.getElementById('btnCancelarMaterial').onclick = () => {
+            document.getElementById('modalMaterial').style.display = 'none';
+        };
+
+        // ========== CRUD BOTONES ==========
+        async function cargarBotones() {
+            const container = document.getElementById('listaBotones');
+            if (!container) return;
+            
+            container.innerHTML = '<div class="cargando">📡 Cargando botones...</div>';
+            
+            try {
+                const botonesRef = collection(db, "botones");
+                const querySnapshot = await getDocs(botonesRef);
+                const botones = [];
+                querySnapshot.forEach(doc => botones.push({ id: doc.id, ...doc.data() }));
+                
+                if (botones.length === 0) {
+                    container.innerHTML = '<p>No hay botones configurados.</p>';
+                    return;
+                }
+                
+                let html = `</table>
+                    <thead>
+                        <tr>
+                            <th>Botón</th>
+                            <th>URL</th>
+                            <th>Imagen/Ícono</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+                
+                for (const boton of botones) {
+                    const tieneImagen = boton.imagen && boton.imagen.trim() !== '';
+                    const previewHTML = tieneImagen 
+                        ? `<img src="${boton.imagen}" class="preview-icono" style="width:50px; height:50px; object-fit:contain;">`
+                        : `<div style="font-size:2rem;">${boton.emoji || '🔧'}</div>`;
+                    
+                    html += `<tr>
+                        <td>${boton.nombre || '-'}</td>
+                        <td>${boton.url || '-'}</td>
+                        <td>${previewHTML}</td>
+                        <td>${boton.descripcion || '-'}</td>
+                        <td class="acciones">
+                            <button class="btn-editar" onclick="window.editarBoton('${boton.id}')">✏️ Editar</button>
+                        </td>
+                    </tr>`;
+                }
+                
+                html += `</tbody>
+                <table>`;
+                container.innerHTML = html;
+                
+                window.editarBoton = async (id) => {
+                    const docRef = doc(db, "botones", id);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        botonEditandoId = id;
+                        document.getElementById('botonId').value = id;
+                        document.getElementById('botonNombre').value = data.nombre || '';
+                        document.getElementById('botonDescripcion').value = data.descripcion || '';
+                        document.getElementById('botonUrl').value = data.url || '';
+                        document.getElementById('botonEmoji').value = data.emoji || '🔧';
+                        document.getElementById('botonImagenUrl').value = data.imagen || '';
+                        if (data.imagen) {
+                            document.getElementById('previewBotonImg').src = data.imagen;
+                            document.getElementById('previewBotonImg').style.display = 'block';
+                        } else {
+                            document.getElementById('previewBotonImg').style.display = 'none';
+                        }
+                        document.getElementById('modalBoton').style.display = 'flex';
+                    }
+                };
+                
+            } catch (error) {
+                console.error("Error:", error);
+                container.innerHTML = '<div class="error">Error al cargar botones</div>';
+            }
+        }
+
+        // ========== CREAR BOTONES POR DEFECTO ==========
+        async function crearBotonesPorDefecto() {
+            try {
+                const botonesRef = collection(db, "botones");
+                const snapshot = await getDocs(botonesRef);
+                
+                if (snapshot.empty) {
+                    console.log("📝 No hay botones, creando por defecto...");
+                    
+                    const botonesDefault = [
+                        { id: "registro", nombre: "Registro de Alumno", descripcion: "Registrate como alumno", url: "registro.html", emoji: "📝", imagen: null, orden: 1 },
+                        { id: "turnos", nombre: "Registro de Asistencia", descripcion: "Reservá tu turno", url: "asistencia.html", emoji: "📅", imagen: null, orden: 2 },
+                        { id: "materiales", nombre: "Material de Estudio", descripcion: "Accedé a guías y apuntes", url: "materiales.html", emoji: "📚", imagen: null, orden: 3 },
+                        { id: "cursos", nombre: "Próximos Cursos", descripcion: "Conocé los cursos disponibles", url: "cursos.html", emoji: "🎓", imagen: null, orden: 4 },
+                        { id: "perfil", nombre: "Mi Perfil", descripcion: "Consultá y actualizá tus datos", url: "perfil.html", emoji: "👤", imagen: null, orden: 5 }
+                    ];
+                    
+                    for (const boton of botonesDefault) {
+                        await setDoc(doc(db, "botones", boton.id), boton);
+                    }
+                    
+                    console.log("✅ Botones por defecto creados");
+                    await cargarBotones();
+                }
+            } catch (error) {
+                console.error("Error al crear botones por defecto:", error);
+            }
+        }
+        
+        // Eventos del modal de botones
+        document.getElementById('btnGuardarBoton').onclick = async () => {
+            const id = document.getElementById('botonId').value;
+            const archivo = document.getElementById('botonArchivo').files[0];
+            let imagenUrl = document.getElementById('botonImagenUrl').value;
+            
+            if (archivo) {
+                const storageRef = ref(storage, `botones/${Date.now()}_${archivo.name}`);
+                await uploadBytes(storageRef, archivo);
+                imagenUrl = await getDownloadURL(storageRef);
+            }
+            
+            const data = {
+                nombre: document.getElementById('botonNombre').value,
+                descripcion: document.getElementById('botonDescripcion').value,
+                url: document.getElementById('botonUrl').value,
+                emoji: document.getElementById('botonEmoji').value,
+                imagen: imagenUrl
+            };
+            
+            if (!data.nombre) {
+                document.getElementById('mensajeBoton').innerHTML = '<div class="error">El nombre es obligatorio</div>';
+                return;
+            }
+            
+            try {
+                await updateDoc(doc(db, "botones", id), data);
+                document.getElementById('modalBoton').style.display = 'none';
+                cargarBotones();
+                document.getElementById('mensajeBotones').innerHTML = '<div class="exito">✅ Botón actualizado</div>';
+                setTimeout(() => document.getElementById('mensajeBotones').innerHTML = '', 3000);
+            } catch (error) {
+                document.getElementById('mensajeBoton').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        };
+        
+        document.getElementById('btnCancelarBoton').onclick = () => {
+            document.getElementById('modalBoton').style.display = 'none';
+        };
+        
+        document.getElementById('botonArchivo').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    document.getElementById('previewBotonImg').src = event.target.result;
+                    document.getElementById('previewBotonImg').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // ========== CRUD ALUMNOS (CORREGIDO - ORDENADO POR NIVEL Y NOMBRE) ==========
+        async function cargarAlumnos() {
+            const container = document.getElementById('listaAlumnos');
+            container.innerHTML = '<div class="cargando">📡 Cargando alumnos...</div>';
+            
+            try {
+                const snapshot = await getDocs(collection(db, "alumnos"));
+                const alumnos = [];
+                snapshot.forEach(doc => alumnos.push({ id: doc.id, ...doc.data() }));
+                
+                // Ordenar por nivel y luego por nombre
+                const ordenNivel = { 'Inicial': 1, 'Intermedio': 2, 'Avanzado': 3 };
+                alumnos.sort((a, b) => {
+                    // Primero por nivel
+                    const nivelA = ordenNivel[a.nivel] || 99;
+                    const nivelB = ordenNivel[b.nivel] || 99;
+                    if (nivelA !== nivelB) return nivelA - nivelB;
+                    
+                    // Luego por nombre completo
+                    const nombreA = (a.nombreCompleto || a.nombre + ' ' + a.apellido || '').toLowerCase();
+                    const nombreB = (b.nombreCompleto || b.nombre + ' ' + b.apellido || '').toLowerCase();
+                    return nombreA.localeCompare(nombreB);
+                });
+                
+                // Filtrar por nivel seleccionado
+                let filtrados = nivelFiltroActual === 'todos' ? alumnos : alumnos.filter(a => a.nivel === nivelFiltroActual);
+                
+                if (filtrados.length === 0) {
+                    container.innerHTML = `<p>No hay alumnos en el nivel ${nivelFiltroActual === 'todos' ? 'registrados' : nivelFiltroActual}.</p>`;
+                    return;
+                }
+                
+                let html = `<table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Nivel</th>
+                            <th>Fecha Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+                
+                for (const alumno of filtrados) {
+                    let nivelClase = '';
+                    if (alumno.nivel === 'Inicial') nivelClase = 'nivel-inicial';
+                    else if (alumno.nivel === 'Intermedio') nivelClase = 'nivel-intermedio';
+                    else if (alumno.nivel === 'Avanzado') nivelClase = 'nivel-avanzado';
+                    
+                    // Formatear fecha correctamente
+                    let fechaFormateada = '-';
+                    if (alumno.fechaRegistro) {
+                        try {
+                            const fecha = new Date(alumno.fechaRegistro);
+                            if (!isNaN(fecha.getTime())) {
+                                fechaFormateada = fecha.toLocaleDateString('es-AR');
+                            }
+                        } catch(e) {
+                            fechaFormateada = '-';
+                        }
+                    }
+                    
+                    html += `<tr>
+                        <td>${alumno.nombreCompleto || alumno.nombre + ' ' + alumno.apellido || '-'}</td>
+                        <td>${alumno.telefono || '-'}</td>
+                        <td><span class="nivel-badge ${nivelClase}">${alumno.nivel || '-'}</span></td>
+                        <td>${fechaFormateada}</td>
+                        <td class="acciones">
+                            <button class="btn-eliminar" onclick="window.eliminarAlumno('${alumno.id}')">🗑️ Eliminar</button>
+                        </td>
+                    </tr>`;
+                }
+                
+                html += `</tbody>
+                </table>`;
+                container.innerHTML = html;
+                
+                window.eliminarAlumno = async (id) => {
+                    if (confirm('¿Eliminar este alumno?')) {
+                        await deleteDoc(doc(db, "alumnos", id));
+                        cargarAlumnos();
+                        cargarEstadisticas();
+                        cargarGraficosAvanzados();
+                    }
+                };
+                
+            } catch (error) {
+                console.error("Error:", error);
+                container.innerHTML = '<div class="error">Error al cargar alumnos</div>';
+            }
+        }
+        
+        function configurarFiltros() {
+            const filtros = document.querySelectorAll('.btn-filtro');
+            filtros.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filtros.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    nivelFiltroActual = btn.dataset.nivel;
+                    cargarAlumnos();
+                });
+            });
+        }
+
+        // ========== CONFIGURACIÓN ==========
+        async function cargarConfiguracion() {
+            try {
+                const configRef = doc(db, "configuracion", "general");
+                const configSnap = await getDoc(configRef);
+                if (configSnap.exists()) {
+                    const data = configSnap.data();
+                    document.getElementById('diasAsistencia').value = (data.diasAsistencia || []).join(', ');
+                    document.getElementById('feriados').value = (data.feriados || []).join(', ');
+                    document.getElementById('cuposPorTurno').value = data.cuposPorTurno || 5;
+                }
+            } catch (error) {
+                console.error("Error cargando configuración:", error);
+            }
+        }
+
+        document.getElementById('btnGuardarConfig').onclick = async () => {
+            const dias = document.getElementById('diasAsistencia').value.split(',').map(d => d.trim()).filter(d => d);
+            const feriados = document.getElementById('feriados').value.split(',').map(f => f.trim()).filter(f => f);
+            const cuposPorTurno = parseInt(document.getElementById('cuposPorTurno').value);
+            
+            if (isNaN(cuposPorTurno) || cuposPorTurno < 1) {
+                document.getElementById('mensajeConfig').innerHTML = '<div class="error">❌ Los cupos deben ser un número válido mayor a 0</div>';
+                return;
+            }
+            
+            document.getElementById('mensajeConfig').innerHTML = '<div class="cargando">📡 Guardando configuración...</div>';
+            
+            try {
+                const configRef = doc(db, "configuracion", "general");
+                await setDoc(configRef, {
+                    diasAsistencia: dias,
+                    feriados: feriados,
+                    cuposPorTurno: cuposPorTurno,
+                    ultimaActualizacion: new Date().toISOString()
+                }, { merge: true });
+                document.getElementById('mensajeConfig').innerHTML = '<div class="exito">✅ Configuración guardada correctamente</div>';
+                setTimeout(() => document.getElementById('mensajeConfig').innerHTML = '', 3000);
+            } catch (error) {
+                console.error("Error guardando configuración:", error);
+                document.getElementById('mensajeConfig').innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        };
+        
+        // Logo
+        const previewImg = document.getElementById('previewImg');
+        document.getElementById('logoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => { previewImg.src = event.target.result; };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        document.getElementById('btnGuardarLogo').onclick = async () => {
+            const file = document.getElementById('logoFile').files[0];
+            if (!file) { alert('Seleccioná un archivo'); return; }
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                await setDoc(doc(db, "configuracion", "general"), { logoBase64: event.target.result }, { merge: true });
+                document.getElementById('logoContainer').innerHTML = `<img src="${event.target.result}" class="logo-img" alt="Logo">`;
+                alert('Logo guardado');
+            };
+            reader.readAsDataURL(file);
+        };
+        
+        document.getElementById('btnEliminarLogo').onclick = async () => {
+            await setDoc(doc(db, "configuracion", "general"), { logoBase64: null }, { merge: true });
+            document.getElementById('logoContainer').innerHTML = '<span>DR</span><span>TECNO</span> 🔧';
+            previewImg.src = '';
+            alert('Logo eliminado');
+        };
+        
+        async function cargarLogo() {
+            const configSnap = await getDoc(doc(db, "configuracion", "general"));
+            if (configSnap.exists() && configSnap.data().logoBase64) {
+                document.getElementById('logoContainer').innerHTML = `<img src="${configSnap.data().logoBase64}" class="logo-img" alt="Logo">`;
+                previewImg.src = configSnap.data().logoBase64;
+            }
+        }
+
+        // ========== TÉRMINOS ==========
+        async function cargarTerminos() {
+            const terminosSnap = await getDoc(doc(db, "configuracion", "terminos"));
+            document.getElementById('terminosTexto').value = terminosSnap.exists() ? terminosSnap.data().texto : '';
+        }
+        
+        document.getElementById('btnGuardarTerminos').onclick = async () => {
+            await setDoc(doc(db, "configuracion", "terminos"), { texto: document.getElementById('terminosTexto').value, ultimaActualizacion: new Date().toISOString() });
+            document.getElementById('mensajeTerminos').innerHTML = '<div class="exito">✅ Términos guardados</div>';
+            setTimeout(() => document.getElementById('mensajeTerminos').innerHTML = '', 3000);
+        };
+
+        // ========== TABS ==========
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+                
+                if (btn.dataset.tab === 'botones') cargarBotones();
+            });
+        });
+
+        // Inicializar
+        checkLoginStatus();
+    </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DR TECNO · Mi Perfil</title>
+    <title>DR TECNO · Material de Estudio</title>
     <style>
         * {
             margin: 0;
@@ -26,6 +26,7 @@
             --accent: #F15A24;
             --success: #28a745;
             --error: #dc3545;
+            --warning: #ffc107;
         }
 
         body.dark {
@@ -112,7 +113,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
         }
@@ -154,8 +155,7 @@
             font-weight: bold;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group input {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid var(--border-color);
@@ -173,11 +173,60 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            width: 100%;
         }
 
-        .btn-success {
+        .nivel-section {
+            margin-bottom: 2rem;
+        }
+
+        .nivel-titulo {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .materiales-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .material-card {
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .material-info {
+            flex: 1;
+        }
+
+        .material-nombre {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .material-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .btn-descargar {
             background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .info-alumno {
@@ -197,7 +246,13 @@
 
         .exito { background: var(--success); color: white; }
         .error { background: var(--error); color: white; }
-        .cargando { background: var(--secondary); color: white; }
+        .cargando { background: var(--warning); color: #333; }
+
+        .bloqueado {
+            text-align: center;
+            padding: 2rem;
+            color: var(--error);
+        }
 
         footer {
             text-align: center;
@@ -215,7 +270,6 @@
         </div>
         <div class="nav-links">
             <a href="index.html">🏠 Inicio</a>
-            <a href="perfil.html">👤 Mi Perfil</a>
             <a href="admin.html">⚙️ Admin</a>
             <button class="theme-toggle" id="themeToggle">🌙 Modo Oscuro</button>
         </div>
@@ -223,11 +277,11 @@
 
     <div class="container">
         <div class="card">
-            <h1>👤 Mi Perfil</h1>
-            <div class="subtitulo">Consultá y actualizá tus datos personales</div>
+            <h1>📚 Material de Estudio</h1>
+            <div class="subtitulo">Accedé a los materiales según tu nivel</div>
 
             <div class="buscar-alumno">
-                <h3>🔍 Identificate para ver tu perfil</h3>
+                <h3>🔍 Identificate para ver los materiales</h3>
                 <div class="form-group">
                     <label>Teléfono del alumno</label>
                     <input type="tel" id="telefonoAlumno" placeholder="Ej: 3425551234">
@@ -239,45 +293,9 @@
             <div id="mensaje"></div>
         </div>
 
-        <div class="card" id="perfilCard" style="display: none;">
-            <h2>📋 Datos Personales</h2>
-            <form id="formPerfil">
-                <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="perfilNombre" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Apellido</label>
-                    <input type="text" id="perfilApellido" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Teléfono</label>
-                    <input type="tel" id="perfilTelefono">
-                </div>
-                <div class="form-group">
-                    <label>Nivel</label>
-                    <select id="perfilNivel" disabled>
-                        <option value="Inicial">Inicial</option>
-                        <option value="Intermedio">Intermedio</option>
-                        <option value="Avanzado">Avanzado</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Email (opcional)</label>
-                    <input type="email" id="perfilEmail" placeholder="ejemplo@mail.com">
-                </div>
-                <button type="submit" class="btn btn-success">💾 Guardar Cambios</button>
-            </form>
-        </div>
-
-        <div class="card" id="misTurnosCard" style="display: none;">
-            <h2>📅 Mis Turnos Reservados</h2>
-            <div id="misTurnosContainer">Cargando...</div>
-        </div>
-
-        <div class="card" id="misCursosCard" style="display: none;">
-            <h2>🎓 Mis Cursos Inscriptos</h2>
-            <div id="misCursosContainer">Cargando...</div>
+        <div class="card" id="materialesCard" style="display: none;">
+            <h2>📖 Materiales Disponibles</h2>
+            <div id="materialesContainer">Cargando...</div>
         </div>
     </div>
 
@@ -286,8 +304,27 @@
     </footer>
 
     <script type="module">
-        import { db, buscarAlumnoPorTelefono } from '../js/conexion.js';
-        import { collection, getDocs, query, where, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { buscarAlumnoPorTelefono } from '../js/conexion.js';
+        import { collection, getDocs, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { db } from '../js/conexion.js';
+
+        const MATERIALES_POR_DEFECTO = {
+            inicial: [
+                { nombre: "Guía de Introducción al Laboratorio", descripcion: "Normas de seguridad y uso básico", url: "#", tipo: "PDF" },
+                { nombre: "Manual de Equipos Básicos", descripcion: "Uso de multímetro y osciloscopio", url: "#", tipo: "PDF" },
+                { nombre: "Práctica N°1: Mediciones", descripcion: "Ejercicios de medición de magnitudes", url: "#", tipo: "PDF" }
+            ],
+            intermedio: [
+                { nombre: "Circuitos Electrónicos", descripcion: "Análisis de circuitos de corriente continua", url: "#", tipo: "PDF" },
+                { nombre: "Programación de Arduino", descripcion: "Introducción a la programación de microcontroladores", url: "#", tipo: "PDF" },
+                { nombre: "Práctica N°2: Sensores", descripcion: "Uso de sensores analógicos y digitales", url: "#", tipo: "PDF" }
+            ],
+            avanzado: [
+                { nombre: "Microcontroladores Avanzados", descripcion: "Programación de ESP32 y STM32", url: "#", tipo: "PDF" },
+                { nombre: "Diseño de PCB", descripcion: "Introducción al diseño de placas de circuito impreso", url: "#", tipo: "PDF" },
+                { nombre: "Proyecto Final", descripcion: "Guía para el desarrollo del proyecto integrador", url: "#", tipo: "PDF" }
+            ]
+        };
 
         const themeToggle = document.getElementById('themeToggle');
         function setTheme(theme) {
@@ -321,89 +358,70 @@
         }
 
         let alumnoActual = null;
-        let reservasAlumno = [];
-        let inscripcionesAlumno = [];
 
-        async function cargarDatosAlumno() {
-            if (!alumnoActual) return;
-            document.getElementById('perfilNombre').value = alumnoActual.nombre || '';
-            document.getElementById('perfilApellido').value = alumnoActual.apellido || '';
-            document.getElementById('perfilTelefono').value = alumnoActual.telefono || '';
-            document.getElementById('perfilNivel').value = alumnoActual.nivel || 'Inicial';
-            document.getElementById('perfilEmail').value = alumnoActual.email || '';
-            await cargarMisTurnos();
-            await cargarMisCursos();
-        }
-
-        async function cargarMisTurnos() {
-            const container = document.getElementById('misTurnosContainer');
-            if (!container) return;
+        async function cargarMaterialesDesdeFirestore() {
             try {
-                const q = query(collection(db, "reservas"), where("alumnoId", "==", alumnoActual.id));
-                const snapshot = await getDocs(q);
-                reservasAlumno = [];
-                snapshot.forEach(doc => reservasAlumno.push(doc.data()));
-                if (reservasAlumno.length === 0) {
-                    container.innerHTML = '<p>📭 No tenés turnos reservados.</p>';
-                    return;
+                const materialesRef = collection(db, "materiales");
+                const querySnapshot = await getDocs(materialesRef);
+                if (querySnapshot.empty) {
+                    await guardarMaterialesDefault();
+                    return MATERIALES_POR_DEFECTO;
                 }
-                let html = `表格<thead><tr><th>Fecha</th><th>Horario</th><th>Estado</th></tr></thead><tbody>`;
-                reservasAlumno.forEach(reserva => {
-                    html += `<tr><td>${reserva.fecha || '-'}</td><td>${reserva.horarioLabel || '-'}</td><td>✅ Confirmado</td></tr>`;
+                const materiales = { inicial: [], intermedio: [], avanzado: [] };
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (materiales[data.nivel]) materiales[data.nivel].push({ id: doc.id, ...data });
                 });
-                html += `</tbody>${'</table>'}`;
-                container.innerHTML = html;
+                return materiales;
             } catch (error) {
-                container.innerHTML = '<p>Error al cargar turnos</p>';
+                console.error("Error cargando materiales:", error);
+                return MATERIALES_POR_DEFECTO;
             }
         }
 
-        async function cargarMisCursos() {
-            const container = document.getElementById('misCursosContainer');
-            if (!container) return;
+        async function guardarMaterialesDefault() {
             try {
-                const q = query(collection(db, "inscripciones"), where("alumnoId", "==", alumnoActual.id));
-                const snapshot = await getDocs(q);
-                inscripcionesAlumno = [];
-                snapshot.forEach(doc => inscripcionesAlumno.push(doc.data()));
-                if (inscripcionesAlumno.length === 0) {
-                    container.innerHTML = '<p>📭 No estás inscripto en ningún curso.</p>';
-                    return;
+                for (const [nivel, materiales] of Object.entries(MATERIALES_POR_DEFECTO)) {
+                    for (const material of materiales) {
+                        await addDoc(collection(db, "materiales"), { ...material, nivel });
+                    }
                 }
-                let html = `表格<thead><tr><th>Curso</th><th>Fecha Inscripción</th></tr></thead><tbody>`;
-                inscripcionesAlumno.forEach(inscripcion => {
-                    html += `<tr><td>${inscripcion.cursoNombre || '-'}</td><td>${new Date(inscripcion.fechaInscripcion).toLocaleDateString()}</td></tr>`;
-                });
-                html += `</tbody>${'</table>'}`;
-                container.innerHTML = html;
+                console.log("Materiales por defecto guardados");
             } catch (error) {
-                container.innerHTML = '<p>Error al cargar cursos</p>';
+                console.error("Error guardando materiales default:", error);
             }
         }
 
-        async function guardarPerfil() {
-            const nuevoTelefono = document.getElementById('perfilTelefono').value.trim();
-            const nuevoEmail = document.getElementById('perfilEmail').value.trim();
-            if (!nuevoTelefono) {
-                mostrarMensaje("El teléfono es obligatorio", "error");
+        function mostrarMaterialesSegunNivel(materiales, nivelAlumno) {
+            const container = document.getElementById('materialesContainer');
+            if (!container) return;
+            let nivelesPermitidos = [];
+            if (nivelAlumno === 'Inicial') nivelesPermitidos = ['inicial'];
+            else if (nivelAlumno === 'Intermedio') nivelesPermitidos = ['inicial', 'intermedio'];
+            else if (nivelAlumno === 'Avanzado') nivelesPermitidos = ['inicial', 'intermedio', 'avanzado'];
+            else nivelesPermitidos = [];
+            if (nivelesPermitidos.length === 0) {
+                container.innerHTML = '<div class="bloqueado">❌ No tenés acceso a ningún material.</div>';
                 return;
             }
-            mostrarMensaje("Guardando cambios...", "cargando");
-            try {
-                const alumnoRef = doc(db, "alumnos", alumnoActual.id);
-                await updateDoc(alumnoRef, { telefono: nuevoTelefono, email: nuevoEmail });
-                alumnoActual.telefono = nuevoTelefono;
-                alumnoActual.email = nuevoEmail;
-                mostrarMensaje("✅ Perfil actualizado correctamente", "exito");
-                setTimeout(() => location.reload(), 1500);
-            } catch (error) {
-                mostrarMensaje("Error al guardar: " + error.message, "error");
+            const nombres = { inicial: '📘 Nivel Inicial', intermedio: '📙 Nivel Intermedio', avanzado: '📕 Nivel Avanzado' };
+            let html = '';
+            for (const nivel of nivelesPermitidos) {
+                const mats = materiales[nivel] || [];
+                if (mats.length === 0) continue;
+                html += `<div class="nivel-section"><div class="nivel-titulo">${nombres[nivel]}</div><div class="materiales-grid">`;
+                for (const m of mats) {
+                    html += `<div class="material-card"><div class="material-info"><div class="material-nombre">📄 ${m.nombre}</div><div class="material-desc">${m.descripcion}</div><div class="material-desc">Tipo: ${m.tipo || 'PDF'}</div></div><a href="${m.url}" class="btn-descargar" target="_blank">📥 Descargar</a></div>`;
+                }
+                html += `</div></div>`;
             }
+            container.innerHTML = html || '<div class="bloqueado">📭 No hay materiales disponibles para tu nivel.</div>';
         }
 
         async function buscarAlumno() {
             const telefono = document.getElementById('telefonoAlumno').value.trim();
             const infoDiv = document.getElementById('infoAlumno');
+            const materialesCard = document.getElementById('materialesCard');
             if (!telefono) {
                 infoDiv.innerHTML = '<div class="mensaje error">⚠️ Ingresá un número de teléfono</div>';
                 return;
@@ -412,29 +430,19 @@
             const alumno = await buscarAlumnoPorTelefono(telefono);
             if (alumno) {
                 alumnoActual = alumno;
-                infoDiv.innerHTML = `<div class="info-alumno">✅ Alumno: ${alumno.nombreCompleto}</div>`;
-                document.getElementById('perfilCard').style.display = 'block';
-                document.getElementById('misTurnosCard').style.display = 'block';
-                document.getElementById('misCursosCard').style.display = 'block';
-                await cargarDatosAlumno();
+                infoDiv.innerHTML = `<div class="info-alumno">✅ Alumno: ${alumno.nombreCompleto} (Nivel: ${alumno.nivel})</div>`;
+                const materiales = await cargarMaterialesDesdeFirestore();
+                mostrarMaterialesSegunNivel(materiales, alumno.nivel);
+                materialesCard.style.display = 'block';
             } else {
                 alumnoActual = null;
                 infoDiv.innerHTML = '<div class="mensaje error">❌ No se encontró ningún alumno con ese teléfono. Registrate primero.</div>';
-                document.getElementById('perfilCard').style.display = 'none';
-                document.getElementById('misTurnosCard').style.display = 'none';
-                document.getElementById('misCursosCard').style.display = 'none';
+                materialesCard.style.display = 'none';
             }
-        }
-
-        function mostrarMensaje(msg, tipo) {
-            const mensajeDiv = document.getElementById('mensaje');
-            mensajeDiv.innerHTML = `<div class="mensaje ${tipo}">${msg}</div>`;
-            setTimeout(() => mensajeDiv.innerHTML = '', 4000);
         }
 
         document.getElementById('btnBuscarAlumno').addEventListener('click', buscarAlumno);
         document.getElementById('telefonoAlumno').addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarAlumno(); });
-        document.getElementById('formPerfil').addEventListener('submit', (e) => { e.preventDefault(); guardarPerfil(); });
 
         cargarLogo();
     </script>

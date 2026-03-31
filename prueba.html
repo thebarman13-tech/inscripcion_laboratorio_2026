@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba - Conexión Firebase</title>
+</head>
+<body>
+    <h1>🔧 Prueba de conexión a Firebase</h1>
+    
+    <h2>Días de Asistencia</h2>
+    <div id="dias"></div>
+    <button id="btnGuardarDias">Guardar Días de Prueba</button>
+    
+    <h2>Feriados</h2>
+    <div id="feriados"></div>
+    <button id="btnAgregarFeriado">Agregar Feriado (25/12)</button>
+    
+    <h2>Alumnos</h2>
+    <div id="alumnos"></div>
+    
+    <script type="module">
+        import { cargarAlumnos, cargarConfiguracion, guardarDiasAsistencia, agregarFeriado } from './js/conexion.js';
+        
+        // Mostrar configuración actual
+        async function mostrarConfiguracion() {
+            const config = await cargarConfiguracion();
+            document.getElementById('dias').innerHTML = `<strong>Días actuales:</strong> ${config.diasAsistencia.join(', ')}`;
+            document.getElementById('feriados').innerHTML = `<strong>Feriados actuales:</strong> ${config.feriados.length ? config.feriados.join(', ') : 'Ninguno'}`;
+        }
+        
+        // Guardar días de prueba
+        document.getElementById('btnGuardarDias').onclick = async () => {
+            const diasPrueba = ["Lunes", "Miércoles", "Viernes"];
+            const resultado = await guardarDiasAsistencia(diasPrueba);
+            if (resultado) {
+                alert("✅ Días guardados correctamente");
+                mostrarConfiguracion();
+            } else {
+                alert("❌ Error al guardar");
+            }
+        };
+        
+        // Agregar feriado
+        document.getElementById('btnAgregarFeriado').onclick = async () => {
+            const resultado = await agregarFeriado("2024-12-25");
+            if (resultado) {
+                alert("✅ Feriado agregado");
+                mostrarConfiguracion();
+            } else {
+                alert("❌ Error al agregar");
+            }
+        };
+        
+        // Mostrar alumnos
+        async function mostrarAlumnos() {
+            const alumnos = await cargarAlumnos();
+            const divAlumnos = document.getElementById('alumnos');
+            if (alumnos.length === 0) {
+                divAlumnos.innerHTML = "<p>No hay alumnos cargados</p>";
+                return;
+            }
+            let html = "<ul>";
+            alumnos.slice(0, 10).forEach(alumno => {
+                html += `<li>${alumno.nombreCompleto || alumno.nombre} - ${alumno.nivel || 'Sin nivel'}</li>`;
+            });
+            html += "</ul>";
+            divAlumnos.innerHTML = html;
+        }
+        
+        // Cargar todo
+        mostrarConfiguracion();
+        mostrarAlumnos();
+    </script>
+</body>
+</html>

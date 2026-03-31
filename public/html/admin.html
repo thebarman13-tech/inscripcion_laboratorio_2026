@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRTECNO · Panel Administrativo</title>
+<!-- CSS Global -->
+<link rel="stylesheet" href="../css/styles.css">
+<!-- Admin CSS Modular -->
+<link rel="stylesheet" href="../css/admin/admin.css">
+<link rel="stylesheet" href="../css/admin/admin-notificaciones.css">
+<link rel="stylesheet" href="../css/admin/admin-estadisticas.css">
+<link rel="stylesheet" href="../css/admin/admin-calendario.css">
+<link rel="stylesheet" href="../css/admin/admin-filtros.css">
+<link rel="stylesheet" href="../css/admin/admin-turnos.css">
+<link rel="stylesheet" href="../css/admin/admin-alumnos.css">
+<link rel="stylesheet" href="../css/admin/admin-gestion.css">
+<link rel="stylesheet" href="../css/admin/admin-archivos.css">
+<link rel="stylesheet" href="../css/admin/admin-cursos.css">
+<link rel="stylesheet" href="../css/admin/admin-config.css">
+<link rel="stylesheet" href="../css/admin/admin-visual.css">
+<!-- Librerías Externas -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo" id="logoContainer">
+    <div id="logoContent">
+      <span>🔧 DRTECNO</span>
+      <small>Laboratorio</small>
+    </div>
+  </div>
+  
+  <div class="header-controls">
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
+    <nav>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="registro.html">📝 Registro</a>
+      <a href="asistencia.html">📅 Asistencia</a>
+      <a href="pdf.html">📄 Materiales</a>
+      <a href="cursos.html">🎓 Cursos</a>
+      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
+      <a href="login.html">🔐 Iniciar Sesión</a>
+      <a id="btnDashboard" href="admin.html" class="active">📊 Dashboard</a>
+      <a id="btnConfig" href="admin.html?tab=configuracion">⚙️ Configuración</a>
+      <a id="btnLogin" href="admin.html?tab=login" style="display:none;">🔐 Admin</a>
+      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- LOGIN SECTION -->
+  <div id="loginSection" class="admin-section" style="display:none;">
+    <div class="login-container">
+      <div class="login-card">
+        <h2>🔐 Acceso Administrador</h2>
+        <form id="formLogin">
+          <div class="form-group">
+            <label>👤 Usuario</label>
+            <input type="text" id="user" placeholder="DRTECNO" required>
+          </div>
+          <div class="form-group">
+            <label>🔒 Contraseña</label>
+            <input type="password" id="pass" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-login">Ingresar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- DASHBOARD SECTION -->
+  <div id="dashboardSection" class="admin-section" style="display:none;">
+    <h2>📊 Panel de Control</h2>
+    
+    <!-- NOTIFICACIONES AL ADMIN -->
+    <div class="notificaciones-section">
+      <h3>🔔 Notificaciones Recientes</h3>
+      <div id="notificacionesList" class="notificaciones-list"></div>
+    </div>
+    
+    <!-- ESTADÍSTICAS AVANZADAS -->
+    <div class="stats-avanzadas">
+      <h3>📊 Estadísticas Avanzadas</h3>
+      <div class="stats-avanzadas-grid">
+        <div class="stat-card-avanzada">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-info">
+            <div class="stat-label">Alumno más activo</div>
+            <div class="stat-value" id="alumnoMasActivo">-</div>
+          </div>
+        </div>
+        <div class="stat-card-avanzada">
+          <div class="stat-icon">⏰</div>
+          <div class="stat-info">
+            <div class="stat-label">Horario más demandado</div>
+            <div class="stat-value" id="horarioMasDemandado">-</div>
+          </div>
+        </div>
+        <div class="stat-card-avanzada">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <div class="stat-label">Día con más turnos</div>
+            <div class="stat-value" id="diaMasTurnos">-</div>
+          </div>
+        </div>
+        <div class="stat-card-avanzada">
+          <div class="stat-icon">❌</div>
+          <div class="stat-info">
+            <div class="stat-label">Tasa de cancelación</div>
+            <div class="stat-value" id="tasaCancelacion">0%</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="charts-avanzadas">
+        <div class="chart-card-avanzada">
+          <h4>🏆 Top 10 Alumnos Más Activos</h4>
+          <div id="rankingAlumnos" class="ranking-list"></div>
+        </div>
+        <div class="chart-card-avanzada">
+          <h4>⏰ Horarios con Mayor Demanda</h4>
+          <canvas id="horariosChart" style="max-height: 250px;"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ESTADÍSTICAS BÁSICAS -->
+    <div class="stats-container">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="totalTurnos">0</div><div>Total Turnos</div></div>
+        <div class="stat-card"><div class="stat-number" id="totalAlumnos">0</div><div>Alumnos Registrados</div></div>
+        <div class="stat-card"><div class="stat-number" id="diasConTurnos">0</div><div>Días con Turnos</div></div>
+        <div class="stat-card"><div class="stat-number" id="tasaOcupacion">0%</div><div>Tasa de Ocupación</div></div>
+      </div>
+    </div>
+    
+    <!-- GRÁFICOS -->
+    <div class="charts-row">
+      <div class="chart-card"><h4>📊 Turnos por Nivel</h4><canvas id="nivelChart"></canvas></div>
+      <div class="chart-card"><h4>📈 Turnos por Motivo</h4><canvas id="motivoChart"></canvas></div>
+    </div>
+    
+    <!-- CALENDARIO MENSUAL -->
+    <div class="calendario-mensual-section">
+      <div class="calendario-header">
+        <h3>📅 Calendario Mensual</h3>
+        <div class="calendario-navegacion">
+          <button onclick="cambiarMes(-1)" class="btn-mes">◀ Mes Anterior</button>
+          <span id="mesActual" class="mes-actual"></span>
+          <button onclick="cambiarMes(1)" class="btn-mes">Mes Siguiente ▶</button>
+          <button onclick="irHoy()" class="btn-mes">📅 Hoy</button>
+        </div>
+      </div>
+      <div id="calendarioMensual" class="calendario-mensual-grid"></div>
+    </div>
+    
+    <!-- FILTROS AVANZADOS -->
+    <div class="filtros-avanzados">
+      <h3>🔍 Filtros Avanzados</h3>
+      <div class="filtros-grid">
+        <div class="filtro-group">
+          <label>📅 Rango de fechas</label>
+          <div class="fechas-range">
+            <input type="date" id="filtroFechaInicio" placeholder="Fecha inicio">
+            <span>a</span>
+            <input type="date" id="filtroFechaFin" placeholder="Fecha fin">
+          </div>
+        </div>
+        <div class="filtro-group">
+          <label>📚 Nivel</label>
+          <select id="filtroNivel">
+            <option value="todos">Todos los niveles</option>
+            <option value="Inicial">📘 Inicial</option>
+            <option value="Intermedio">📗 Intermedio</option>
+            <option value="Avanzado">📕 Avanzado</option>
+          </select>
+        </div>
+        <div class="filtro-group">
+          <label>📌 Motivo</label>
+          <select id="filtroMotivo">
+            <option value="todos">Todos los motivos</option>
+            <option>🔧 Problema en placa</option>
+            <option>💻 Software</option>
+            <option>🔄 Cambio de piezas</option>
+            <option>🔍 Diagnóstico</option>
+            <option>📝 Otro</option>
+          </select>
+        </div>
+        <div class="filtro-group">
+          <label>👤 Alumno</label>
+          <input type="text" id="filtroAlumno" placeholder="Nombre o teléfono">
+        </div>
+        <div class="filtro-buttons">
+          <button onclick="aplicarFiltros()" class="btn-filtrar">🔍 Aplicar Filtros</button>
+          <button onclick="limpiarFiltros()" class="btn-limpiar">🗑️ Limpiar Filtros</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TURNOS AGENDADOS -->
+    <div class="turnos-section">
+      <div class="turnos-header">
+        <h3>📅 Turnos Agendados</h3>
+        <div class="turnos-tabs">
+          <button class="tab-btn active" onclick="mostrarTabTurnos('vigentes')">📌 Vigentes</button>
+          <button class="tab-btn" onclick="mostrarTabTurnos('archivados')">📦 Archivados</button>
+        </div>
+      </div>
+      <div id="turnosVigentes" class="turnos-container active"><div id="turnosVigentesList" class="turnos-list"></div></div>
+      <div id="turnosArchivados" class="turnos-container"><div id="turnosArchivadosList" class="turnos-list"></div></div>
+    </div>
+    
+    <!-- BOTONES DE EXPORTACIÓN -->
+    <div class="export-buttons">
+      <button onclick="exportarExcel('todos')" class="btn-export">📊 Exportar Todos los Alumnos</button>
+      <button onclick="exportarExcel('Inicial')" class="btn-export nivel-inicial">📘 Exportar Alumnos Inicial</button>
+      <button onclick="exportarExcel('Intermedio')" class="btn-export nivel-intermedio">📗 Exportar Alumnos Intermedio</button>
+      <button onclick="exportarExcel('Avanzado')" class="btn-export nivel-avanzado">📕 Exportar Alumnos Avanzado</button>
+    </div>
+    
+    <!-- ALUMNOS POR NIVEL -->
+    <div class="niveles-container">
+      <div class="nivel-section"><div class="nivel-header inicial"><h3>📘 Nivel Inicial</h3><span class="badge" id="contadorInicial">0 alumnos</span></div><div id="alumnosInicial" class="alumnos-grid"></div></div>
+      <div class="nivel-section"><div class="nivel-header intermedio"><h3>📗 Nivel Intermedio</h3><span class="badge" id="contadorIntermedio">0 alumnos</span></div><div id="alumnosIntermedio" class="alumnos-grid"></div></div>
+      <div class="nivel-section"><div class="nivel-header avanzado"><h3>📕 Nivel Avanzado</h3><span class="badge" id="contadorAvanzado">0 alumnos</span></div><div id="alumnosAvanzado" class="alumnos-grid"></div></div>
+    </div>
+  </div>
+  
+  <!-- CONFIGURACIÓN SECTION -->
+  <div id="configuracionSection" class="admin-section" style="display:none;">
+    <h2>⚙️ Panel de Configuración</h2>
+    
+    <div class="config-container">
+      <!-- Configuración del Logo -->
+      <div class="config-card logo-config">
+        <h3>🖼️ Configuración del Logo</h3>
+        <p class="config-desc">Personaliza el logo que aparece en la cabecera de todas las páginas</p>
+        <div class="logo-preview-container"><div class="logo-preview-title">Vista previa del logo actual:</div><div id="logoPreview" class="logo-preview"></div></div>
+        <div class="logo-options">
+          <div class="logo-option"><h4>📁 Subir imagen</h4><p class="config-desc">Formatos permitidos: PNG, JPG, JPEG, SVG, GIF (máx 2MB)</p><input type="file" id="logoUpload" accept="image/*" class="file-input"><button onclick="subirLogo()" class="btn-subir-logo">⬆️ Subir Logo</button></div>
+          <div class="logo-option"><h4>🎨 Logo con texto</h4><p class="config-desc">Usar texto con ícono y nombre</p><div class="logo-text-config"><div class="form-group"><label>Ícono (emojis permitidos)</label><input type="text" id="logoIcon" placeholder="🔧" maxlength="5"></div><div class="form-group"><label>Nombre del laboratorio</label><input type="text" id="logoName" placeholder="DRTECNO"></div><div class="form-group"><label>Subtítulo</label><input type="text" id="logoSlogan" placeholder="Laboratorio"></div><button onclick="guardarLogoTexto()" class="btn-guardar">💾 Guardar Logo de Texto</button></div></div>
+          <div class="logo-option"><h4>🔄 Restablecer logo predeterminado</h4><button onclick="restablecerLogo()" class="btn-reset">↺ Restablecer Logo Original</button></div>
+        </div>
+      </div>
+      
+      <!-- Gestión de Alumnos -->
+      <div class="config-card gestion-alumnos">
+        <h3>👥 Gestión de Alumnos</h3>
+        <p class="config-desc">Editar o eliminar alumnos registrados</p>
+        <div class="buscar-alumno"><input type="text" id="buscarAlumnoConfig" placeholder="🔍 Buscar por nombre, apellido o teléfono..." class="search-input"></div>
+        <div id="listaAlumnosConfig" class="alumnos-gestion-list"></div>
+      </div>
+      
+      <!-- Gestión de Archivos -->
+      <div class="config-card archivos-gestion">
+        <h3>📁 Gestión de Archivos</h3>
+        <p class="config-desc">Sube, administra y organiza documentos para los alumnos</p>
+        <div class="subir-archivo">
+          <h4>📤 Subir nuevo archivo</h4>
+          <div class="form-group"><label>📄 Archivo (PDF, DOC, JPG, etc.)</label><input type="file" id="archivoSubir" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.xls,.xlsx,.zip"></div>
+          <div class="form-group"><label>📝 Nombre del archivo</label><input type="text" id="archivoNombre" placeholder="Ej: Guía de soldadura.pdf"></div>
+          <div class="form-group"><label>📋 Descripción (opcional)</label><textarea id="archivoDescripcion" rows="2" placeholder="Breve descripción del contenido..."></textarea></div>
+          <button onclick="subirArchivo()" class="btn-subir-archivo">⬆️ Subir Archivo</button>
+        </div>
+        <div class="archivos-lista"><h4>📋 Archivos disponibles</h4><div id="listaArchivosAdmin" class="archivos-admin-list"></div></div>
+      </div>
+      
+      <!-- Gestión de Cursos -->
+      <div class="config-card cursos-gestion">
+        <h3>🎓 Gestión de Cursos</h3>
+        <p class="config-desc">Sube y administra los cursos (PDF, DOC, etc.)</p>
+        <div class="subir-curso">
+          <h4>📤 Subir nuevo curso</h4>
+          <div class="form-group"><label>📄 Archivo (PDF, DOC, JPG, etc.)</label><input type="file" id="cursoSubir" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"></div>
+          <div class="form-group"><label>📝 Título del curso</label><input type="text" id="cursoTitulo" placeholder="Ej: Introducción a la Electrónica"></div>
+          <div class="form-group"><label>📋 Descripción (opcional)</label><textarea id="cursoDescripcion" rows="2" placeholder="Breve descripción del curso..."></textarea></div>
+          <button onclick="subirCurso()" class="btn-subir-curso">⬆️ Subir Curso</button>
+        </div>
+        <div class="cursos-lista"><h4>📋 Cursos disponibles</h4><div id="listaCursosAdmin" class="cursos-admin-list"></div></div>
+      </div>
+      
+      <!-- Días Hábitos -->
+      <div class="config-card">
+        <h3>📅 Días Hábitos</h3>
+        <p class="config-desc">Selecciona los días de la semana en los que se pueden reservar turnos</p>
+        <div class="dias-checkboxes" id="diasHabilesContainer">
+          <label><input type="checkbox" value="1"> Lunes</label>
+          <label><input type="checkbox" value="2"> Martes</label>
+          <label><input type="checkbox" value="3"> Miércoles</label>
+          <label><input type="checkbox" value="4"> Jueves</label>
+          <label><input type="checkbox" value="5"> Viernes</label>
+          <label><input type="checkbox" value="6"> Sábado</label>
+          <label><input type="checkbox" value="0"> Domingo</label>
+        </div>
+        <button onclick="guardarDiasHabiles()" class="btn-guardar">💾 Guardar Días Hábitos</button>
+      </div>
+      
+      <!-- Horarios de Turnos -->
+      <div class="config-card">
+        <h3>⏰ Horarios de Turnos</h3>
+        <p class="config-desc">Define los horarios disponibles (formato: HH:MM a HH:MM)</p>
+        <div id="horariosContainer">
+          <div class="horarios-list" id="horariosList"></div>
+          <div class="horarios-actions">
+            <input type="text" id="nuevoHorario" placeholder="Ej: 12:00 a 14:00" class="horario-input">
+            <button onclick="agregarHorario()" class="btn-agregar">➕ Agregar Horario</button>
+          </div>
+        </div>
+        <button onclick="guardarHorarios()" class="btn-guardar">💾 Guardar Horarios</button>
+      </div>
+      
+      <!-- Feriados -->
+      <div class="config-card">
+        <h3>📆 Feriados</h3>
+        <p class="config-desc">Fechas en las que NO se pueden reservar turnos</p>
+        <div id="feriadosContainer">
+          <div class="feriados-list" id="feriadosList"></div>
+          <div class="feriados-actions">
+            <input type="date" id="nuevoFeriado" class="feriado-input">
+            <button onclick="agregarFeriado()" class="btn-agregar">➕ Agregar Feriado</button>
+          </div>
+        </div>
+        <button onclick="guardarFeriados()" class="btn-guardar">💾 Guardar Feriados</button>
+      </div>
+      
+      <!-- Mensaje de Confirmación -->
+      <div class="config-card">
+        <h3>💬 Mensaje de Confirmación</h3>
+        <p class="config-desc">Personaliza el mensaje que ven los alumnos al reservar un turno</p>
+        <textarea id="mensajeConfirmacion" rows="8" placeholder="Escribe el mensaje de confirmación..."></textarea>
+        <button onclick="guardarMensaje()" class="btn-guardar">💾 Guardar Mensaje</button>
+      </div>
+      
+      <!-- Botón de Reset General -->
+      <div class="config-card reset-card">
+        <h3>🔄 Restablecer Configuración</h3>
+        <p class="config-desc">Vuelve a la configuración predeterminada (incluye logo)</p>
+        <button onclick="resetearConfiguracion()" class="btn-reset">⚠️ Restablecer Valores Predeterminados</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<div id="modalEditarAlumno" class="modal">
+  <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-header" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));">
+      <h2 style="color: #3b82f6;">✏️ Editar Alumno</h2>
+    </div>
+    <div class="modal-body">
+      <form id="formEditarAlumno">
+        <input type="hidden" id="editAlumnoId">
+        <div class="form-group"><label>📛 Nombre</label><input type="text" id="editNombre" placeholder="Nombre" required></div>
+        <div class="form-group"><label>📛 Apellido</label><input type="text" id="editApellido" placeholder="Apellido" required></div>
+        <div class="form-group"><label>📞 Teléfono</label><input type="tel" id="editTelefono" placeholder="Teléfono" required></div>
+        <div class="form-group"><label>📚 Nivel</label><select id="editNivel" required><option value="Inicial">📘 Inicial</option><option value="Intermedio">📗 Intermedio</option><option value="Avanzado">📕 Avanzado</option></select></div>
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;"><button type="submit" class="btn-guardar" style="flex: 1;">💾 Guardar Cambios</button><button type="button" onclick="cerrarModalEditar()" class="btn-reset" style="flex: 1;">❌ Cancelar</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Admin JS Modular -->
+<script src="../js/app.js"></script>
+<script src="../js/admin/admin.js"></script>
+<script src="../js/admin/admin-notificaciones.js"></script>
+<script src="../js/admin/admin-estadisticas.js"></script>
+<script src="../js/admin/admin-calendario.js"></script>
+<script src="../js/admin/admin-filtros.js"></script>
+<script src="../js/admin/admin-turnos.js"></script>
+<script src="../js/admin/admin-alumnos.js"></script>
+<script src="../js/admin/admin-archivos.js"></script>
+<script src="../js/admin/admin-cursos.js"></script>
+<script src="../js/admin/admin-config.js"></script>
+</body>
+</html>

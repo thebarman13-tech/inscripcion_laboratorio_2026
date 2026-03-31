@@ -1,63 +1,538 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DRTECNO · Cursos y Talleres</title>
-<link rel="stylesheet" href="../css/styles.css">
-<link rel="stylesheet" href="../css/cursos.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR TECNO · Próximos Cursos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --bg-color: #F5F7FA;
+            --card-bg: #ffffff;
+            --text-color: #1a202c;
+            --text-light: #4a5568;
+            --navbar-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --primary: #005B9F;
+            --primary-dark: #003B6F;
+            --secondary: #00A3E0;
+            --accent: #F15A24;
+            --success: #28a745;
+            --error: #dc3545;
+            --warning: #ffc107;
+        }
+
+        body.dark {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-color: #f7fafc;
+            --text-light: #cbd5e0;
+            --navbar-bg: #2d3748;
+            --border-color: #4a5568;
+            --shadow: 0 10px 25px rgba(0,0,0,0.3);
+            --primary: #00A3E0;
+            --primary-dark: #005B9F;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 150px;
+            object-fit: contain;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .card h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitulo {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .buscar-alumno {
+            background: var(--bg-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .cursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .curso-card {
+            background: var(--bg-color);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .curso-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .curso-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1rem;
+        }
+
+        .curso-header h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .curso-nivel {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .curso-body {
+            padding: 1rem;
+        }
+
+        .curso-info {
+            margin-bottom: 0.75rem;
+        }
+
+        .curso-info span {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .curso-descripcion {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .curso-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cupos {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .cupos-disponible {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .cupos-lleno {
+            color: var(--error);
+            font-weight: bold;
+        }
+
+        .btn-inscribirse {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-inscripto {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .info-alumno {
+            background: var(--success);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .mensaje {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .exito { background: var(--success); color: white; }
+        .error { background: var(--error); color: white; }
+        .cargando { background: var(--warning); color: #333; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
-
-<header>
-  <div class="logo" id="logoContainer">
-    <div id="logoContent">
-      <span>🔧 DRTECNO</span>
-      <small>Laboratorio</small>
+    <div class="navbar">
+        <div class="logo" id="logoContainer">
+            <span>DR</span><span>TECNO</span> 🔧
+        </div>
+        <div class="nav-links">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="admin.html">⚙️ Admin</a>
+            <button class="theme-toggle" id="themeToggle">🌙 Modo Oscuro</button>
+        </div>
     </div>
-  </div>
-  
-  <div class="header-controls">
-    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
-    <nav>
-      <a href="index.html">🏠 Inicio</a>
-      <a href="registro.html">📝 Registro</a>
-      <a href="asistencia.html">📅 Asistencia</a>
-      <a href="pdf.html">📄 Materiales</a>
-      <a href="cursos.html" class="active">🎓 Cursos</a>
-      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
-      <a href="login.html">🔐 Iniciar Sesión</a>
-      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
-      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
-      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
-      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
-    </nav>
-  </div>
-</header>
 
-<main>
-  <div class="cursos-container">
-    <div class="cursos-header">
-      <h2>🎓 Cursos y Talleres</h2>
-      <p class="cursos-desc">Aquí encontrarás toda la información sobre cursos, talleres y capacitaciones del laboratorio.</p>
-    </div>
-    
-    <div class="search-bar">
-      <input type="text" id="buscarCurso" placeholder="🔍 Buscar por nombre o descripción..." class="search-input">
-    </div>
-    
-    <div id="listaCursos" class="cursos-grid">
-      <div class="loading">
-        <span>📂</span>
-        <p>Cargando cursos...</p>
-      </div>
-    </div>
-  </div>
-</main>
+    <div class="container">
+        <div class="card">
+            <h1>🎓 Próximos Cursos</h1>
+            <div class="subtitulo">Conocé los cursos disponibles e inscribite</div>
 
-<div id="toast" class="toast"></div>
+            <div class="buscar-alumno">
+                <h3>🔍 Identificate para inscribirte a los cursos</h3>
+                <div class="form-group">
+                    <label>Teléfono del alumno</label>
+                    <input type="tel" id="telefonoAlumno" placeholder="Ej: 3425551234">
+                </div>
+                <button id="btnBuscarAlumno" class="btn">🔍 Buscar Alumno</button>
+                <div id="infoAlumno"></div>
+            </div>
 
-<script src="../js/app.js"></script>
-<script src="../js/cursos.js"></script>
+            <div id="mensaje"></div>
+        </div>
+
+        <div class="card" id="cursosCard">
+            <h2>📋 Cursos Disponibles</h2>
+            <div id="cursosContainer" class="cursos-grid">Cargando...</div>
+        </div>
+
+        <div class="card" id="misInscripcionesCard" style="display: none;">
+            <h2>📝 Mis Cursos Inscriptos</h2>
+            <div id="misInscripcionesContainer">Cargando...</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>DR TECNO Laboratorio - Sistema de Gestión de Turnos</p>
+    </footer>
+
+    <script type="module">
+        import { buscarAlumnoPorTelefono } from '../js/conexion.js';
+        import { db } from '../js/conexion.js';
+        import { collection, addDoc, getDocs, query, where, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const CURSOS_POR_DEFECTO = [
+            { nombre: "Electrónica Básica", nivel: "Inicial", fechaInicio: "15/04/2026", fechaFin: "20/05/2026", horario: "Martes y Jueves 14:00 a 16:00", duracion: "10 clases", cuposTotales: 15, cuposDisponibles: 15, descripcion: "Introducción a la electrónica.", instructores: "Ing. Juan Pérez", estado: "activo" },
+            { nombre: "Programación de Microcontroladores", nivel: "Intermedio", fechaInicio: "20/04/2026", fechaFin: "25/05/2026", horario: "Lunes y Miércoles 16:00 a 18:00", duracion: "12 clases", cuposTotales: 12, cuposDisponibles: 12, descripcion: "Programación de Arduino y ESP32.", instructores: "Ing. María Gómez", estado: "activo" },
+            { nombre: "Robótica Educativa", nivel: "Avanzado", fechaInicio: "05/05/2026", fechaFin: "10/06/2026", horario: "Miércoles y Viernes 18:00 a 20:00", duracion: "12 clases", cuposTotales: 10, cuposDisponibles: 10, descripcion: "Construcción y programación de robots.", instructores: "Ing. Carlos Rodríguez", estado: "activo" }
+        ];
+
+        let alumnoActual = null;
+        let inscripcionesAlumno = [];
+
+        const themeToggle = document.getElementById('themeToggle');
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+                themeToggle.textContent = '☀️ Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                themeToggle.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme');
+        setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        });
+
+        async function cargarLogo() {
+            try {
+                const configRef = doc(db, "configuracion", "general");
+                const configSnap = await getDoc(configRef);
+                if (configSnap.exists() && configSnap.data().logoBase64) {
+                    document.getElementById('logoContainer').innerHTML = `<img src="${configSnap.data().logoBase64}" class="logo-img" alt="Logo">`;
+                }
+            } catch (error) {
+                console.error("Error cargando logo:", error);
+            }
+        }
+
+        async function cargarCursosDesdeFirestore() {
+            try {
+                const cursosRef = collection(db, "cursos");
+                const querySnapshot = await getDocs(cursosRef);
+                if (querySnapshot.empty) {
+                    for (const curso of CURSOS_POR_DEFECTO) await addDoc(collection(db, "cursos"), curso);
+                    return CURSOS_POR_DEFECTO;
+                }
+                const cursos = [];
+                querySnapshot.forEach(doc => cursos.push({ id: doc.id, ...doc.data() }));
+                return cursos;
+            } catch (error) {
+                console.error("Error cargando cursos:", error);
+                return CURSOS_POR_DEFECTO;
+            }
+        }
+
+        async function mostrarCursos() {
+            const container = document.getElementById('cursosContainer');
+            container.innerHTML = '<div class="cargando">📡 Cargando cursos...</div>';
+            const cursos = await cargarCursosDesdeFirestore();
+            if (cursos.length === 0) {
+                container.innerHTML = '<div class="bloqueado">📭 No hay cursos disponibles.</div>';
+                return;
+            }
+            let html = '';
+            for (const curso of cursos) {
+                const yaInscripto = inscripcionesAlumno.some(i => i.cursoId === curso.id);
+                const cuposClase = curso.cuposDisponibles > 0 ? 'cupos-disponible' : 'cupos-lleno';
+                html += `<div class="curso-card"><div class="curso-header"><h3>${curso.nombre}</h3><div class="curso-nivel">🎓 Nivel: ${curso.nivel}</div></div><div class="curso-body"><div class="curso-info"><span>📅 Fecha:</span> ${curso.fechaInicio} al ${curso.fechaFin}</div><div class="curso-info"><span>⏰ Horario:</span> ${curso.horario}</div><div class="curso-info"><span>📚 Duración:</span> ${curso.duracion}</div><div class="curso-info"><span>👨‍🏫 Instructor:</span> ${curso.instructores}</div><div class="curso-descripcion">${curso.descripcion}</div></div><div class="curso-footer"><div class="cupos">📊 Cupos: <span class="${cuposClase}">${curso.cuposDisponibles}/${curso.cuposTotales}</span></div>`;
+                if (yaInscripto) html += `<span class="btn-inscripto">✅ Ya inscripto</span>`;
+                else if (curso.cuposDisponibles > 0) html += `<button class="btn-inscribirse" data-id="${curso.id}" data-nombre="${curso.nombre}">📝 Inscribirse</button>`;
+                else html += `<button class="btn-inscribirse" disabled>❌ Sin cupos</button>`;
+                html += `</div></div>`;
+            }
+            container.innerHTML = html;
+            document.querySelectorAll('.btn-inscribirse').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const cursoId = btn.dataset.id;
+                    const cursoNombre = btn.dataset.nombre;
+                    await inscribirseCurso(cursoId, cursoNombre);
+                });
+            });
+        }
+
+        async function inscribirseCurso(cursoId, cursoNombre) {
+            if (!alumnoActual) { mostrarMensaje("Primero identificá al alumno", "error"); return; }
+            if (inscripcionesAlumno.some(i => i.cursoId === cursoId)) { mostrarMensaje("Ya estás inscripto en este curso", "error"); return; }
+            mostrarMensaje("Procesando inscripción...", "cargando");
+            try {
+                const cursoRef = doc(db, "cursos", cursoId);
+                const cursoDoc = await getDoc(cursoRef);
+                if (!cursoDoc.exists()) { mostrarMensaje("El curso no existe", "error"); return; }
+                const cursoData = cursoDoc.data();
+                if (cursoData.cuposDisponibles <= 0) { mostrarMensaje("No hay cupos disponibles", "error"); return; }
+                await updateDoc(cursoRef, { cuposDisponibles: cursoData.cuposDisponibles - 1 });
+                await addDoc(collection(db, "inscripciones"), { alumnoId: alumnoActual.id, alumnoNombre: alumnoActual.nombreCompleto, alumnoTelefono: alumnoActual.telefono, cursoId, cursoNombre, fechaInscripcion: new Date().toISOString() });
+                mostrarMensaje(`✅ Inscripción exitosa al curso ${cursoNombre}`, "exito");
+                await cargarInscripcionesAlumno();
+                await mostrarCursos();
+                mostrarMisInscripciones();
+            } catch (error) { mostrarMensaje(`Error: ${error.message}`, "error"); }
+        }
+
+        async function cargarInscripcionesAlumno() {
+            if (!alumnoActual) return;
+            try {
+                const q = query(collection(db, "inscripciones"), where("alumnoId", "==", alumnoActual.id));
+                const querySnapshot = await getDocs(q);
+                inscripcionesAlumno = [];
+                querySnapshot.forEach(doc => inscripcionesAlumno.push({ id: doc.id, ...doc.data() }));
+            } catch (error) { console.error("Error cargando inscripciones:", error); }
+        }
+
+        async function mostrarMisInscripciones() {
+            const container = document.getElementById('misInscripcionesContainer');
+            const card = document.getElementById('misInscripcionesCard');
+            if (inscripcionesAlumno.length === 0) { container.innerHTML = '<p>📭 No estás inscripto en ningún curso.</p>'; card.style.display = 'block'; return; }
+            const cursos = await cargarCursosDesdeFirestore();
+            const cursosMap = {};
+            cursos.forEach(curso => cursosMap[curso.id] = curso);
+            let html = `<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse;"><thead><tr style="background: var(--primary); color: white;"><th style="padding: 10px;">Curso</th><th style="padding: 10px;">Nivel</th><th style="padding: 10px;">Fecha Inicio</th><th style="padding: 10px;">Horario</th><th style="padding: 10px;">Estado</th>`;
+            for (const inscripcion of inscripcionesAlumno) {
+                const curso = cursosMap[inscripcion.cursoId];
+                if (curso) html += `<tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">${curso.nombre}</td><td style="padding: 10px;">${curso.nivel}</td><td style="padding: 10px;">${curso.fechaInicio}</td><td style="padding: 10px;">${curso.horario}</td><td style="padding: 10px;">✅ Inscripto</td></tr>`;
+            }
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
+            card.style.display = 'block';
+        }
+
+        async function buscarAlumno() {
+            const telefono = document.getElementById('telefonoAlumno').value.trim();
+            const infoDiv = document.getElementById('infoAlumno');
+            if (!telefono) { infoDiv.innerHTML = '<div class="mensaje error">⚠️ Ingresá un número de teléfono</div>'; return; }
+            infoDiv.innerHTML = '<div class="mensaje cargando">🔍 Buscando alumno...</div>';
+            const alumno = await buscarAlumnoPorTelefono(telefono);
+            if (alumno) {
+                alumnoActual = alumno;
+                infoDiv.innerHTML = `<div class="info-alumno">✅ Alumno: ${alumno.nombreCompleto} (Nivel: ${alumno.nivel})</div>`;
+                await cargarInscripcionesAlumno();
+                await mostrarCursos();
+                await mostrarMisInscripciones();
+            } else {
+                alumnoActual = null;
+                inscripcionesAlumno = [];
+                infoDiv.innerHTML = '<div class="mensaje error">❌ No se encontró ningún alumno con ese teléfono. Registrate primero.</div>';
+                document.getElementById('cursosContainer').innerHTML = '<div class="cursos-grid">Identificate para ver los cursos</div>';
+                document.getElementById('misInscripcionesCard').style.display = 'none';
+            }
+        }
+
+        function mostrarMensaje(msg, tipo) {
+            const mensajeDiv = document.getElementById('mensaje');
+            mensajeDiv.innerHTML = `<div class="mensaje ${tipo}">${msg}</div>`;
+            setTimeout(() => mensajeDiv.innerHTML = '', 4000);
+        }
+
+        document.getElementById('btnBuscarAlumno').addEventListener('click', buscarAlumno);
+        document.getElementById('telefonoAlumno').addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarAlumno(); });
+
+        async function cargarCursosVistaPrevia() {
+            const cursos = await cargarCursosDesdeFirestore();
+            const container = document.getElementById('cursosContainer');
+            if (cursos.length === 0) { container.innerHTML = '<div class="cargando">📡 Cargando cursos...</div>'; return; }
+            let html = '';
+            for (const curso of cursos) {
+                const cuposClase = curso.cuposDisponibles > 0 ? 'cupos-disponible' : 'cupos-lleno';
+                html += `<div class="curso-card"><div class="curso-header"><h3>${curso.nombre}</h3><div class="curso-nivel">🎓 Nivel: ${curso.nivel}</div></div><div class="curso-body"><div class="curso-info"><span>📅 Fecha:</span> ${curso.fechaInicio} al ${curso.fechaFin}</div><div class="curso-info"><span>⏰ Horario:</span> ${curso.horario}</div><div class="curso-info"><span>📚 Duración:</span> ${curso.duracion}</div><div class="curso-info"><span>👨‍🏫 Instructor:</span> ${curso.instructores}</div><div class="curso-descripcion">${curso.descripcion}</div></div><div class="curso-footer"><div class="cupos">📊 Cupos: <span class="${cuposClase}">${curso.cuposDisponibles}/${curso.cuposTotales}</span></div><button class="btn-inscribirse" disabled style="background:#6c757d">🔒 Identificate</button></div></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        cargarCursosVistaPrevia();
+        cargarLogo();
+    </script>
 </body>
 </html>

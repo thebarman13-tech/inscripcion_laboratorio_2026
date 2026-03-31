@@ -1,0 +1,72 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.login-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.login-desc {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.btn-login-alumno {
+  background: linear-gradient(135deg, #10b981, #059669);
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  padding: 0.9rem;
+}
+
+.login-mensaje {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.login-mensaje.success {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #10b981;
+}
+
+.login-mensaje.error {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+.login-registro-link {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.login-registro-link a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.login-registro-link a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRTECNO · Laboratorio</title>
+<link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo" id="logoContainer">
+    <div id="logoContent">
+      <span>🔧 DRTECNO</span>
+      <small>Laboratorio</small>
+    </div>
+  </div>
+  
+  <div class="header-controls">
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
+    <nav>
+      <a href="index.html" class="active">🏠 Inicio</a>
+      <a href="registro.html">📝 Registro</a>
+      <a href="asistencia.html">📅 Asistencia</a>
+      <a href="pdf.html">📄 Materiales</a>
+      <a href="cursos.html">🎓 Cursos</a>
+      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
+      <a href="login.html">🔐 Iniciar Sesión</a>
+      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
+      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
+      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
+      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="welcome-container">
+    <div class="welcome-card">
+      <h1>🔧 Bienvenido al Sistema de Gestión de Turnos</h1>
+      <p>Laboratorio DRTECNO</p>
+      <div class="welcome-buttons">
+        <a href="registro.html" class="btn-primary">📝 Registrarse como Alumno</a>
+        <a href="asistencia.html" class="btn-secondary">📅 Reservar Turno</a>
+        <a href="login.html" class="btn-outline" style="border-color: #10b981; color: #10b981;">🔐 Iniciar Sesión</a>
+        <a href="pdf.html" class="btn-outline" style="border-color: #8b5cf6; color: #8b5cf6;">📄 Materiales</a>
+        <a href="cursos.html" class="btn-outline" style="border-color: #f59e0b; color: #f59e0b;">🎓 Cursos</a>
+        <a href="admin.html" class="btn-outline">🔐 Acceso Administrador</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

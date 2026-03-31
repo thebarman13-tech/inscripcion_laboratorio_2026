@@ -1,93 +1,346 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DRTECNO · Registro de Alumnos</title>
-<link rel="stylesheet" href="../css/styles.css">
-<link rel="stylesheet" href="../css/registro.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR TECNO · Registro de Alumno</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --bg-color: #F5F7FA;
+            --card-bg: #ffffff;
+            --text-color: #1a202c;
+            --text-light: #4a5568;
+            --navbar-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --primary: #005B9F;
+            --primary-dark: #003B6F;
+            --secondary: #00A3E0;
+            --accent: #F15A24;
+            --success: #28a745;
+            --error: #dc3545;
+        }
+
+        body.dark {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-color: #f7fafc;
+            --text-light: #cbd5e0;
+            --navbar-bg: #2d3748;
+            --border-color: #4a5568;
+            --shadow: 0 10px 25px rgba(0,0,0,0.3);
+            --primary: #00A3E0;
+            --primary-dark: #005B9F;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 150px;
+            object-fit: contain;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-card h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitulo {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .mensaje {
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .exito {
+            background: var(--success);
+            color: white;
+        }
+
+        .error {
+            background: var(--error);
+            color: white;
+        }
+
+        .cargando {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 1.5rem;
+            text-align: center;
+            width: 100%;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
-
-<header>
-  <div class="logo" id="logoContainer">
-    <div id="logoContent">
-      <span>🔧 DRTECNO</span>
-      <small>Laboratorio</small>
+    <div class="navbar">
+        <div class="logo" id="logoContainer">
+            <span>DR</span><span>TECNO</span> 🔧
+        </div>
+        <div class="nav-links">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="admin.html">⚙️ Admin</a>
+            <button class="theme-toggle" id="themeToggle">🌙 Modo Oscuro</button>
+        </div>
     </div>
-  </div>
-  
-  <div class="header-controls">
-    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
-    <nav>
-      <a href="index.html">🏠 Inicio</a>
-      <a href="registro.html" class="active">📝 Registro</a>
-      <a href="asistencia.html">📅 Asistencia</a>
-      <a href="pdf.html">📄 Materiales</a>
-      <a href="cursos.html">🎓 Cursos</a>
-      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
-      <a href="login.html">🔐 Iniciar Sesión</a>
-      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
-      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
-      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
-      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
-    </nav>
-  </div>
-</header>
 
-<main>
-  <div class="registro-container">
-    <div class="registro-card">
-      <h2>📝 Registro de Alumno</h2>
-      <p class="registro-desc">Completa tus datos para comenzar a reservar turnos en el laboratorio</p>
-      
-      <form id="formRegistro">
-        <div class="form-group">
-          <label>📛 Nombre</label>
-          <input type="text" placeholder="Ej: Juan" id="nombre" required>
+    <div class="container">
+        <div class="form-card">
+            <h1>📝 Registro de Alumno</h1>
+            <div class="subtitulo">Completá tus datos para comenzar a usar el sistema</div>
+
+            <form id="formRegistro">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Juan" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Apellido *</label>
+                    <input type="text" id="apellido" placeholder="Ej: Pérez" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono *</label>
+                    <input type="tel" id="telefono" placeholder="Ej: 3425551234" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Nivel *</label>
+                    <select id="nivel" required>
+                        <option value="">Seleccionar nivel</option>
+                        <option value="Inicial">Inicial</option>
+                        <option value="Intermedio">Intermedio</option>
+                        <option value="Avanzado">Avanzado</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">✅ Registrarse</button>
+            </form>
+
+            <div id="mensaje"></div>
+            <a href="index.html" class="volver">← Volver al inicio</a>
         </div>
-        
-        <div class="form-group">
-          <label>📛 Apellido</label>
-          <input type="text" placeholder="Ej: Pérez" id="apellido" required>
-        </div>
-        
-        <div class="form-group">
-          <label>📞 Teléfono</label>
-          <input type="tel" placeholder="Ej: 1234567890" id="telefono" required>
-          <small>Este será tu identificador único para reservar turnos</small>
-        </div>
-        
-        <div class="form-group">
-          <label>📚 Nivel</label>
-          <select id="nivel">
-            <option value="Inicial">📘 Inicial</option>
-            <option value="Intermedio">📗 Intermedio</option>
-            <option value="Avanzado">📕 Avanzado</option>
-          </select>
-        </div>
-        
-        <button type="submit" class="btn-registrar">✅ Registrar Alumno</button>
-      </form>
-      
-      <div id="msgRegistro" class="mensaje-registro"></div>
     </div>
-    
-    <div class="info-card-registro">
-      <h3>📌 ¿Por qué registrarte?</h3>
-      <ul>
-        <li>✅ Reservar turnos en el laboratorio</li>
-        <li>✅ Ver tu historial de turnos</li>
-        <li>✅ Recibir recordatorios importantes</li>
-        <li>✅ Acceder a materiales exclusivos</li>
-      </ul>
-    </div>
-  </div>
-</main>
 
-<div id="toast" class="toast"></div>
+    <footer>
+        <p>DR TECNO Laboratorio - Sistema de Gestión de Turnos</p>
+    </footer>
 
-<script src="../js/app.js"></script>
-<script src="../js/registro.js"></script>
+    <script type="module">
+        import { registrarAlumno } from '../js/conexion.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { db } from '../js/conexion.js';
+
+        const themeToggle = document.getElementById('themeToggle');
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+                themeToggle.textContent = '☀️ Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                themeToggle.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme');
+        setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        });
+
+        async function cargarLogo() {
+            try {
+                const configRef = doc(db, "configuracion", "general");
+                const configSnap = await getDoc(configRef);
+                if (configSnap.exists()) {
+                    const data = configSnap.data();
+                    if (data.logoBase64 && data.logoBase64.trim() !== '') {
+                        const logoContainer = document.getElementById('logoContainer');
+                        logoContainer.innerHTML = `<img src="${data.logoBase64}" class="logo-img" alt="Logo">`;
+                    }
+                }
+            } catch (error) {
+                console.error("Error cargando logo:", error);
+            }
+        }
+
+        const form = document.getElementById('formRegistro');
+        const mensajeDiv = document.getElementById('mensaje');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const datos = {
+                nombre: document.getElementById('nombre').value.trim(),
+                apellido: document.getElementById('apellido').value.trim(),
+                telefono: document.getElementById('telefono').value.trim(),
+                nivel: document.getElementById('nivel').value
+            };
+            
+            if (!datos.nombre || !datos.apellido || !datos.telefono || !datos.nivel) {
+                mensajeDiv.innerHTML = '<div class="mensaje error">⚠️ Completá todos los campos</div>';
+                return;
+            }
+            
+            mensajeDiv.innerHTML = '<div class="mensaje cargando">📡 Registrando alumno...</div>';
+            
+            const resultado = await registrarAlumno(datos);
+            
+            if (resultado.success) {
+                mensajeDiv.innerHTML = '<div class="mensaje exito">✅ ¡Alumno registrado exitosamente!</div>';
+                form.reset();
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } else {
+                mensajeDiv.innerHTML = `<div class="mensaje error">❌ Error: ${resultado.error}</div>`;
+            }
+        });
+
+        cargarLogo();
+    </script>
 </body>
 </html>

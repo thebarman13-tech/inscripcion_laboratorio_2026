@@ -1,58 +1,566 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DRTECNO · Laboratorio</title>
-<link rel="stylesheet" href="../css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR TECNO · Inicio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --bg-color: #F5F7FA;
+            --card-bg: #ffffff;
+            --text-color: #1a202c;
+            --text-light: #4a5568;
+            --navbar-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --primary: #005B9F;
+            --primary-dark: #003B6F;
+            --secondary: #00A3E0;
+            --accent: #F15A24;
+            --success: #28a745;
+            --error: #dc3545;
+            --warning: #ffc107;
+        }
+
+        body.dark {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-color: #f7fafc;
+            --text-light: #cbd5e0;
+            --navbar-bg: #2d3748;
+            --border-color: #4a5568;
+            --shadow: 0 10px 25px rgba(0,0,0,0.3);
+            --primary: #00A3E0;
+            --primary-dark: #005B9F;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 150px;
+            object-fit: contain;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            min-height: 180px;
+            border: 2px solid transparent;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+
+        .menu-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 15px;
+        }
+
+        .menu-icon .emoji {
+            font-size: 2.5rem;
+        }
+
+        .menu-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .menu-card p {
+            color: var(--text-light);
+            font-size: 0.75rem;
+        }
+
+        /* Notificaciones flotantes */
+        .notificacion-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .notificacion {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+            max-width: 350px;
+        }
+
+        .notificacion:hover {
+            transform: scale(1.02);
+        }
+
+        .notificacion.success {
+            background: var(--success);
+        }
+
+        .notificacion.warning {
+            background: var(--warning);
+            color: #333;
+        }
+
+        .notificacion.error {
+            background: var(--error);
+        }
+
+        .notificacion-icon {
+            font-size: 1.5rem;
+        }
+
+        .notificacion-contenido {
+            flex: 1;
+        }
+
+        .notificacion-titulo {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .notificacion-mensaje {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .notificacion-cerrar {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .notificacion-cerrar:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero {
+                padding: 2rem;
+            }
+            .buttons-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            .menu-card {
+                min-height: 150px;
+                padding: 1rem;
+            }
+            .menu-icon {
+                width: 40px;
+                height: 40px;
+            }
+            .menu-icon .emoji {
+                font-size: 1.8rem;
+            }
+            .menu-card h3 {
+                font-size: 0.8rem;
+            }
+            .notificacion {
+                max-width: 280px;
+                padding: 8px 12px;
+            }
+            .notificacion-icon {
+                font-size: 1.2rem;
+            }
+            .notificacion-titulo {
+                font-size: 0.8rem;
+            }
+            .notificacion-mensaje {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<header>
-  <div class="logo" id="logoContainer">
-    <div id="logoContent">
-      <span>🔧 DRTECNO</span>
-      <small>Laboratorio</small>
+    <div class="navbar">
+        <div class="logo" id="logoContainer">
+            <span>DR</span><span>TECNO</span> 🔧
+        </div>
+        <div class="nav-links">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="registro.html">📝 Registro</a>
+            <a href="asistencia.html">📅 Turnos</a>
+            <a href="materiales.html">📚 Materiales</a>
+            <a href="cursos.html">🎓 Cursos</a>
+            <a href="perfil.html">👤 Mi Perfil</a>
+            <a href="admin.html">⚙️ Admin</a>
+            <button class="theme-toggle" id="themeToggle">🌙 Modo Oscuro</button>
+        </div>
     </div>
-  </div>
-  
-  <div class="header-controls">
-    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
-    <nav>
-      <a href="index.html" class="active">🏠 Inicio</a>
-      <a href="registro.html">📝 Registro</a>
-      <a href="asistencia.html">📅 Asistencia</a>
-      <a href="pdf.html">📄 Materiales</a>
-      <a href="cursos.html">🎓 Cursos</a>
-      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
-      <a href="login.html">🔐 Iniciar Sesión</a>
-      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
-      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
-      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
-      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
-    </nav>
-  </div>
-</header>
 
-<main>
-  <div class="welcome-container">
-    <div class="welcome-card">
-      <h1>🔧 Bienvenido al Sistema de Gestión de Turnos</h1>
-      <p>Laboratorio DRTECNO</p>
-      <div class="welcome-buttons">
-        <a href="registro.html" class="btn-primary">📝 Registrarse como Alumno</a>
-        <a href="asistencia.html" class="btn-secondary">📅 Reservar Turno</a>
-        <a href="login.html" class="btn-outline" style="border-color: #10b981; color: #10b981;">🔐 Iniciar Sesión</a>
-        <a href="pdf.html" class="btn-outline" style="border-color: #8b5cf6; color: #8b5cf6;">📄 Materiales</a>
-        <a href="cursos.html" class="btn-outline" style="border-color: #f59e0b; color: #f59e0b;">🎓 Cursos</a>
-        <a href="admin.html" class="btn-outline">🔐 Acceso Administrador</a>
-      </div>
+    <div class="container">
+        <div class="hero">
+            <h1>🔧 Bienvenido al Sistema de Gestión</h1>
+            <p>Laboratorio DR TECNO</p>
+        </div>
+
+        <div class="buttons-grid" id="botonesContainer">
+            <div class="cargando" style="text-align: center; padding: 2rem;">📡 Cargando...</div>
+        </div>
     </div>
-  </div>
-</main>
 
-<div id="toast" class="toast"></div>
+    <!-- Contenedor de notificaciones -->
+    <div id="notificacionContainer" class="notificacion-container"></div>
 
-<script src="../js/app.js"></script>
+    <footer>
+        <p>DR TECNO Laboratorio - Sistema de Gestión de Turnos</p>
+    </footer>
+
+    <script type="module">
+        import { doc, getDoc, collection, getDocs, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { db } from '../js/conexion.js';
+
+        let ultimoAlumnoId = null;
+        let ultimoTurnoId = null;
+        let notificacionesActivas = [];
+
+        const BOTONES_POR_DEFECTO = [
+            { id: "registro", nombre: "Registro de Alumno", descripcion: "Registrate como alumno", url: "registro.html", emoji: "📝", imagen: null, orden: 1 },
+            { id: "turnos", nombre: "Registro de Asistencia", descripcion: "Reservá tu turno", url: "asistencia.html", emoji: "📅", imagen: null, orden: 2 },
+            { id: "materiales", nombre: "Material de Estudio", descripcion: "Accedé a guías y apuntes", url: "materiales.html", emoji: "📚", imagen: null, orden: 3 },
+            { id: "cursos", nombre: "Próximos Cursos", descripcion: "Conocé los cursos disponibles", url: "cursos.html", emoji: "🎓", imagen: null, orden: 4 },
+            { id: "perfil", nombre: "Mi Perfil", descripcion: "Consultá y actualizá tus datos", url: "perfil.html", emoji: "👤", imagen: null, orden: 5 }
+        ];
+
+        const themeToggle = document.getElementById('themeToggle');
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+                themeToggle.textContent = '☀️ Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                themeToggle.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme');
+        setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        });
+
+        async function cargarLogo() {
+            try {
+                const configRef = doc(db, "configuracion", "general");
+                const configSnap = await getDoc(configRef);
+                if (configSnap.exists()) {
+                    const data = configSnap.data();
+                    if (data.logoBase64 && data.logoBase64.trim() !== '') {
+                        const logoContainer = document.getElementById('logoContainer');
+                        logoContainer.innerHTML = `<img src="${data.logoBase64}" class="logo-img" alt="Logo">`;
+                    }
+                }
+            } catch (error) {
+                console.error("Error cargando logo:", error);
+            }
+        }
+
+        async function cargarBotones() {
+            const container = document.getElementById('botonesContainer');
+            try {
+                const botonesRef = collection(db, "botones");
+                const querySnapshot = await getDocs(botonesRef);
+                let botones = [];
+                if (querySnapshot.empty) {
+                    botones = BOTONES_POR_DEFECTO;
+                } else {
+                    querySnapshot.forEach(doc => botones.push({ id: doc.id, ...doc.data() }));
+                    botones.sort((a, b) => (a.orden || 0) - (b.orden || 0));
+                }
+                renderizarBotones(botones);
+            } catch (error) {
+                console.error("Error cargando botones:", error);
+                renderizarBotones(BOTONES_POR_DEFECTO);
+            }
+        }
+
+        function renderizarBotones(botones) {
+            const container = document.getElementById('botonesContainer');
+            if (!container) return;
+            if (botones.length === 0) {
+                container.innerHTML = '<p>No hay botones configurados</p>';
+                return;
+            }
+            let html = '';
+            for (const boton of botones) {
+                const tieneImagen = boton.imagen && boton.imagen.trim() !== '';
+                const iconoHTML = tieneImagen 
+                    ? `<img src="${boton.imagen}" alt="${boton.nombre}">` 
+                    : `<div class="emoji">${boton.emoji || '🔧'}</div>`;
+                html += `
+                    <a href="${boton.url}" class="menu-card">
+                        <div class="menu-icon">${iconoHTML}</div>
+                        <h3>${boton.nombre}</h3>
+                        <p>${boton.descripcion || ''}</p>
+                    </a>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function mostrarNotificacion(titulo, mensaje, tipo = 'success', duracion = 5000) {
+            const container = document.getElementById('notificacionContainer');
+            if (!container) return;
+            const id = Date.now();
+            const notificacion = document.createElement('div');
+            notificacion.className = `notificacion ${tipo}`;
+            notificacion.id = `notif-${id}`;
+            let icono = '✅';
+            if (tipo === 'warning') icono = '⚠️';
+            if (tipo === 'error') icono = '❌';
+            notificacion.innerHTML = `
+                <div class="notificacion-icon">${icono}</div>
+                <div class="notificacion-contenido">
+                    <div class="notificacion-titulo">${titulo}</div>
+                    <div class="notificacion-mensaje">${mensaje}</div>
+                </div>
+                <button class="notificacion-cerrar" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(notificacion);
+            notificacionesActivas.push(id);
+            setTimeout(() => {
+                const elemento = document.getElementById(`notif-${id}`);
+                if (elemento) {
+                    elemento.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => elemento.remove(), 300);
+                }
+                notificacionesActivas = notificacionesActivas.filter(i => i !== id);
+            }, duracion);
+            notificacion.addEventListener('click', (e) => {
+                if (e.target.className !== 'notificacion-cerrar') {
+                    notificacion.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => notificacion.remove(), 300);
+                }
+            });
+        }
+
+        function escucharNuevosAlumnos() {
+            const alumnosRef = collection(db, "alumnos");
+            const q = query(alumnosRef, orderBy("fechaRegistro", "desc"), limit(1));
+            onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const alumno = change.doc.data();
+                        const alumnoId = change.doc.id;
+                        if (ultimoAlumnoId !== alumnoId) {
+                            ultimoAlumnoId = alumnoId;
+                            mostrarNotificacion(
+                                "📝 Nuevo Alumno Registrado",
+                                `${alumno.nombreCompleto || alumno.nombre + ' ' + alumno.apellido} se ha registrado en el sistema`,
+                                "success",
+                                5000
+                            );
+                        }
+                    }
+                });
+            }, (error) => {
+                console.error("Error escuchando alumnos:", error);
+            });
+        }
+
+        function escucharNuevasReservas() {
+            const reservasRef = collection(db, "reservas");
+            const q = query(reservasRef, orderBy("fechaReserva", "desc"), limit(1));
+            onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const reserva = change.doc.data();
+                        const reservaId = change.doc.id;
+                        if (ultimoTurnoId !== reservaId) {
+                            ultimoTurnoId = reservaId;
+                            mostrarNotificacion(
+                                "📅 Nueva Reserva de Turno",
+                                `${reserva.alumnoNombre || 'Un alumno'} reservó turno para el ${reserva.fecha} de ${reserva.horarioLabel}`,
+                                "success",
+                                6000
+                            );
+                        }
+                    }
+                });
+            }, (error) => {
+                console.error("Error escuchando reservas:", error);
+            });
+        }
+
+        cargarLogo();
+        cargarBotones();
+        escucharNuevosAlumnos();
+        escucharNuevasReservas();
+    </script>
 </body>
 </html>

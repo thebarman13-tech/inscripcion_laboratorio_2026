@@ -1,142 +1,710 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DRTECNO · Reserva de Turnos</title>
-<link rel="stylesheet" href="../css/styles.css">
-<link rel="stylesheet" href="../css/asistencia.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR TECNO · Reserva de Turnos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --bg-color: #F5F7FA;
+            --card-bg: #ffffff;
+            --text-color: #1a202c;
+            --text-light: #4a5568;
+            --navbar-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --primary: #005B9F;
+            --primary-dark: #003B6F;
+            --secondary: #00A3E0;
+            --accent: #F15A24;
+            --success: #28a745;
+            --error: #dc3545;
+            --warning: #ffc107;
+            --disabled: #6c757d;
+        }
+
+        body.dark {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-color: #f7fafc;
+            --text-light: #cbd5e0;
+            --navbar-bg: #2d3748;
+            --border-color: #4a5568;
+            --shadow: 0 10px 25px rgba(0,0,0,0.3);
+            --primary: #00A3E0;
+            --primary-dark: #005B9F;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 150px;
+            object-fit: contain;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .card h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitulo {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .buscar-alumno {
+            background: var(--bg-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .calendario {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .dia-card {
+            background: var(--bg-color);
+            border-radius: 15px;
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .dia-titulo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .turnos-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .turno-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .turno-horario {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .turno-cupos {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .btn-reservar {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-reservar:hover {
+            background: #218838;
+        }
+
+        .btn-reservar:disabled {
+            background: var(--disabled);
+            cursor: not-allowed;
+        }
+
+        .reservado {
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.7rem;
+        }
+
+        .info-alumno {
+            background: var(--success);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .mensaje {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .exito { background: var(--success); color: white; }
+        .error { background: var(--error); color: white; }
+        .cargando { background: var(--warning); color: #333; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .terminos-texto {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-eliminar {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
 </head>
 <body>
-
-<header>
-  <div class="logo" id="logoContainer">
-    <div id="logoContent">
-      <span>🔧 DRTECNO</span>
-      <small>Laboratorio</small>
-    </div>
-  </div>
-  
-  <div class="header-controls">
-    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌙</button>
-    <nav>
-      <a href="index.html">🏠 Inicio</a>
-      <a href="registro.html">📝 Registro</a>
-      <a href="asistencia.html" class="active">📅 Asistencia</a>
-      <a href="pdf.html">📄 Materiales</a>
-      <a href="cursos.html">🎓 Cursos</a>
-      <a href="javascript:void(0)" onclick="irAPerfil()">👤 Mi Perfil</a>
-      <a href="login.html">🔐 Iniciar Sesión</a>
-      <a id="btnDashboard" href="admin.html" style="display:none;">📊 Dashboard</a>
-      <a id="btnConfig" href="admin.html?tab=configuracion" style="display:none;">⚙️ Configuración</a>
-      <a id="btnLogin" href="admin.html?tab=login">🔐 Admin</a>
-      <a id="btnLogout" href="#" onclick="logout()" style="display:none;">🚪 Salir</a>
-    </nav>
-  </div>
-</header>
-
-<main>
-  <div class="asistencia-container">
-    <h2>📅 Reservar Turno</h2>
-    
-    <div class="search-bar">
-      <input type="text" id="buscarTurnos" placeholder="🔍 Buscar por alumno, fecha o motivo..." class="search-input">
-    </div>
-    
-    <div id="calendario" class="calendario-grid"></div>
-    
-    <div class="form-card">
-      <h3>✏️ Completar reserva</h3>
-      <form id="formTurno">
-        <div class="form-group">
-          <label>📞 Teléfono del alumno</label>
-          <input type="tel" placeholder="Ej: 1234567890" id="telTurno" required>
+    <div class="navbar">
+        <div class="logo" id="logoContainer">
+            <span>DR</span><span>TECNO</span> 🔧
         </div>
-        
-        <div class="form-group">
-          <label>📅 Fecha del turno</label>
-          <input type="date" id="fechaTurno" required>
+        <div class="nav-links">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="admin.html">⚙️ Admin</a>
+            <button class="theme-toggle" id="themeToggle">🌙 Modo Oscuro</button>
         </div>
-        
-        <div class="form-group">
-          <label>⏰ Horario</label>
-          <select id="turnoSelect" required></select>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>📅 Reserva de Turnos - Laboratorio</h1>
+            <div class="subtitulo">Seleccioná un día y horario disponible (Martes, Miércoles o Jueves)</div>
+
+            <div class="buscar-alumno">
+                <h3>🔍 Identificate para reservar</h3>
+                <div class="form-group">
+                    <label>Teléfono del alumno</label>
+                    <input type="tel" id="telefonoAlumno" placeholder="Ej: 3425551234">
+                </div>
+                <button id="btnBuscarAlumno" class="btn">🔍 Buscar Alumno</button>
+                <div id="infoAlumno"></div>
+            </div>
+
+            <div id="mensaje"></div>
         </div>
-        
-        <div class="form-group">
-          <label>📌 Motivo de la asistencia</label>
-          <select id="motivo" required>
-            <option value="">Selecciona un motivo</option>
-            <option>🔧 Problema en placa</option>
-            <option>💻 Software</option>
-            <option>🔄 Cambio de piezas</option>
-            <option>🔍 Diagnóstico</option>
-            <option>📝 Otro</option>
-          </select>
+
+        <div class="card" id="calendarioCard" style="display: none;">
+            <h2>📆 Turnos Disponibles</h2>
+            <div id="calendarioContainer" class="calendario">Cargando...</div>
         </div>
+
+        <div class="card" id="misReservasCard" style="display: none;">
+            <h2>📋 Mis Turnos Reservados</h2>
+            <div id="misReservasContainer">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- Modal de Términos y Condiciones -->
+    <div id="modalTerminos" class="modal">
+        <div class="modal-content">
+            <h2>📜 Términos y Condiciones</h2>
+            <div id="terminosTextoModal" class="terminos-texto">Cargando términos...</div>
+            <div class="modal-buttons">
+                <button id="btnRechazarTerminos" class="btn btn-danger">❌ Rechazar</button>
+                <button id="btnAceptarTerminos" class="btn btn-success">✅ Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>DR TECNO Laboratorio - Sistema de Gestión de Turnos</p>
+    </footer>
+
+    <script type="module">
+        import { db, buscarAlumnoPorTelefono } from '../js/conexion.js';
+        import { collection, addDoc, getDocs, query, where, deleteDoc, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const DIAS_PERMITIDOS = { '2': 'Martes', '3': 'Miércoles', '4': 'Jueves' };
+        const HORARIOS = [
+            { id: '12-14', label: '12:00 a 14:00', horaInicio: '12:00', horaFin: '14:00' },
+            { id: '14-16', label: '14:00 a 16:00', horaInicio: '14:00', horaFin: '16:00' },
+            { id: '16-18', label: '16:00 a 18:00', horaInicio: '16:00', horaFin: '18:00' }
+        ];
         
-        <button type="submit" class="btn-confirmar">✅ Confirmar Asistencia</button>
-      </form>
-    </div>
-    
-    <div class="historial-card" id="historialCard" style="display:none;">
-      <h3>📜 Historial de turnos</h3>
-      <div id="historialTurnos"></div>
-    </div>
-    
-    <div class="login-rapido">
-      <h3>🔐 Iniciar sesión para ver tu perfil</h3>
-      <div class="form-group">
-        <label>📞 Ingresa tu teléfono</label>
-        <input type="tel" id="loginTelefono" placeholder="Ej: 1234567890">
-      </div>
-      <button onclick="iniciarSesion()" class="btn-login-rapido">🚀 Iniciar Sesión</button>
-      <div id="loginMensaje" class="login-mensaje"></div>
-    </div>
-  </div>
-</main>
+        let CUPOS_POR_TURNO = 5;
+        let alumnoActual = null;
+        let reservasAlumno = [];
+        let terminosActuales = null;
+        let reservaPendiente = null;
 
-<div id="toast" class="toast"></div>
+        const themeToggle = document.getElementById('themeToggle');
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+                themeToggle.textContent = '☀️ Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                themeToggle.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme');
+        setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        });
 
-<div id="modalConfirmacion" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>✅ Turno Confirmado</h2>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
-    <div class="modal-footer">
-      <button id="btnAceptar" class="btn-aceptar">✔️ ACEPTAR</button>
-    </div>
-  </div>
-</div>
+        async function cargarConfiguracion() {
+            try {
+                const configRef = doc(db, "configuracion", "general");
+                const configSnap = await getDoc(configRef);
+                if (configSnap.exists()) {
+                    const data = configSnap.data();
+                    if (data.cuposPorTurno) CUPOS_POR_TURNO = data.cuposPorTurno;
+                }
+            } catch (error) {
+                console.error("Error cargando configuración:", error);
+            }
+        }
 
-<script src="../js/app.js"></script>
-<script src="../js/asistencia.js"></script>
+        async function cargarLogo() {
+            try {
+                const configRef = doc(db, "configuracion", "general");
+                const configSnap = await getDoc(configRef);
+                if (configSnap.exists() && configSnap.data().logoBase64) {
+                    document.getElementById('logoContainer').innerHTML = `<img src="${configSnap.data().logoBase64}" class="logo-img" alt="Logo">`;
+                }
+            } catch (error) {
+                console.error("Error cargando logo:", error);
+            }
+        }
 
-<script>
-function iniciarSesion() {
-    const telefono = document.getElementById("loginTelefono").value.trim();
-    if (!telefono) {
-        showToast("❌ Ingresa tu teléfono", "error");
-        return;
-    }
-    
-    const alumno = getAlumnoPorTelefono(telefono);
-    if (alumno) {
-        localStorage.setItem("alumno_telefono", telefono);
-        localStorage.setItem("alumno_nombre", alumno.nombre);
-        localStorage.setItem("alumno_apellido", alumno.apellido);
-        localStorage.setItem("alumno_nivel", alumno.nivel);
-        localStorage.setItem("alumno_id", alumno.id);
-        showToast(`✅ Bienvenido ${alumno.nombre}!`, "success");
-        setTimeout(() => {
-            window.location.href = "perfil.html";
-        }, 1500);
-    } else {
-        showToast("❌ Teléfono no registrado. Regístrate primero.", "error");
-    }
-}
-</script>
+        async function cargarTerminos() {
+            try {
+                const terminosRef = doc(db, "configuracion", "terminos");
+                const terminosSnap = await getDoc(terminosRef);
+                if (terminosSnap.exists()) {
+                    terminosActuales = terminosSnap.data().texto;
+                } else {
+                    terminosActuales = `📜 TÉRMINOS Y CONDICIONES - LABORATORIO DR TECNO\n\n1. RESPONSABILIDAD\nEl alumno es responsable del uso adecuado de las instalaciones y equipos del laboratorio.\n\n2. HORARIOS\nLos turnos deben ser respetados en su totalidad. La cancelación debe realizarse con al menos 2 horas de anticipación.\n\n3. SEGURIDAD\nEs obligatorio seguir todas las normas de seguridad del laboratorio.\n\n4. DATOS PERSONALES\nLos datos proporcionados serán utilizados únicamente para la gestión académica.\n\n✅ Al marcar "Aceptar", confirmás que leíste y aceptás estos términos.`;
+                }
+            } catch (error) {
+                console.error("Error cargando términos:", error);
+            }
+        }
 
+        function mostrarModalTerminos(callbackAceptar) {
+            const modal = document.getElementById('modalTerminos');
+            document.getElementById('terminosTextoModal').innerText = terminosActuales;
+            const aceptarBtn = document.getElementById('btnAceptarTerminos');
+            const rechazarBtn = document.getElementById('btnRechazarTerminos');
+            const aceptarHandler = () => {
+                modal.style.display = 'none';
+                aceptarBtn.removeEventListener('click', aceptarHandler);
+                rechazarBtn.removeEventListener('click', rechazarHandler);
+                callbackAceptar(true);
+            };
+            const rechazarHandler = () => {
+                modal.style.display = 'none';
+                aceptarBtn.removeEventListener('click', aceptarHandler);
+                rechazarBtn.removeEventListener('click', rechazarHandler);
+                callbackAceptar(false);
+                mostrarMensaje("Debés aceptar los términos para reservar un turno", "error");
+            };
+            aceptarBtn.addEventListener('click', aceptarHandler);
+            rechazarBtn.addEventListener('click', rechazarHandler);
+            modal.style.display = 'flex';
+        }
+
+        function generarProximosDias() {
+            const dias = [];
+            const hoy = new Date();
+            for (let i = 0; i < 21; i++) {
+                const fecha = new Date(hoy);
+                fecha.setDate(hoy.getDate() + i);
+                const diaSemana = fecha.getDay().toString();
+                if (DIAS_PERMITIDOS[diaSemana]) {
+                    dias.push({
+                        fecha: fecha,
+                        fechaStr: fecha.toISOString().split('T')[0],
+                        diaSemana: DIAS_PERMITIDOS[diaSemana],
+                        diaNumero: fecha.getDate(),
+                        mes: fecha.getMonth() + 1,
+                        año: fecha.getFullYear()
+                    });
+                }
+            }
+            return dias;
+        }
+
+        async function cargarTurnosDesdeFirestore() {
+            try {
+                const turnosRef = collection(db, "turnos");
+                const querySnapshot = await getDocs(turnosRef);
+                const turnos = {};
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const key = `${data.fecha}_${data.horarioId}`;
+                    turnos[key] = { id: doc.id, ...data };
+                });
+                return turnos;
+            } catch (error) {
+                console.error("Error cargando turnos:", error);
+                return {};
+            }
+        }
+
+        async function reservarTurnoConTerminos(fecha, horarioId, horarioLabel) {
+            if (!alumnoActual) {
+                mostrarMensaje("Primero identificá al alumno", "error");
+                return;
+            }
+            if (reservasAlumno.some(r => r.fecha === fecha)) {
+                mostrarMensaje(`Ya tenés una reserva para el día ${fecha}. No podés reservar otro turno el mismo día.`, "error");
+                return;
+            }
+            reservaPendiente = { fecha, horarioId, horarioLabel };
+            mostrarModalTerminos((aceptado) => {
+                if (aceptado) ejecutarReserva();
+                reservaPendiente = null;
+            });
+        }
+
+        async function ejecutarReserva() {
+            if (!reservaPendiente || !alumnoActual) return;
+            const { fecha, horarioId, horarioLabel } = reservaPendiente;
+            mostrarMensaje("Procesando reserva...", "cargando");
+            try {
+                const turnosRef = collection(db, "turnos");
+                const q = query(turnosRef, where("fecha", "==", fecha), where("horarioId", "==", horarioId));
+                const querySnapshot = await getDocs(q);
+                let turnoId, cuposRestantes;
+                if (!querySnapshot.empty) {
+                    const turnoDoc = querySnapshot.docs[0];
+                    turnoId = turnoDoc.id;
+                    const turnoData = turnoDoc.data();
+                    cuposRestantes = turnoData.cuposRestantes - 1;
+                    if (cuposRestantes < 0) {
+                        mostrarMensaje("No hay cupos disponibles para este turno", "error");
+                        return;
+                    }
+                    await updateDoc(doc(db, "turnos", turnoId), {
+                        cuposRestantes: cuposRestantes,
+                        reservas: [...(turnoData.reservas || []), { alumnoId: alumnoActual.id, alumnoNombre: alumnoActual.nombreCompleto, telefono: alumnoActual.telefono, fechaReserva: new Date().toISOString() }]
+                    });
+                } else {
+                    cuposRestantes = CUPOS_POR_TURNO - 1;
+                    const nuevoTurno = {
+                        fecha, horarioId, horarioLabel,
+                        cuposTotales: CUPOS_POR_TURNO,
+                        cuposRestantes: cuposRestantes,
+                        reservas: [{ alumnoId: alumnoActual.id, alumnoNombre: alumnoActual.nombreCompleto, telefono: alumnoActual.telefono, fechaReserva: new Date().toISOString() }]
+                    };
+                    const docRef = await addDoc(collection(db, "turnos"), nuevoTurno);
+                    turnoId = docRef.id;
+                }
+                await addDoc(collection(db, "reservas"), {
+                    alumnoId: alumnoActual.id, alumnoNombre: alumnoActual.nombreCompleto, telefono: alumnoActual.telefono,
+                    fecha, horarioId, horarioLabel, turnoId,
+                    fechaReserva: new Date().toISOString(), terminosAceptados: true
+                });
+                mostrarMensaje(`✅ Reserva confirmada para ${fecha} de ${horarioLabel}`, "exito");
+                await cargarReservasAlumno();
+                await mostrarCalendario();
+            } catch (error) {
+                console.error("Error al reservar:", error);
+                mostrarMensaje(`Error: ${error.message}`, "error");
+            }
+        }
+
+        async function cargarReservasAlumno() {
+            if (!alumnoActual) return;
+            try {
+                const q = query(collection(db, "reservas"), where("alumnoId", "==", alumnoActual.id));
+                const querySnapshot = await getDocs(q);
+                reservasAlumno = [];
+                querySnapshot.forEach(doc => reservasAlumno.push({ id: doc.id, ...doc.data() }));
+                mostrarMisReservas();
+            } catch (error) {
+                console.error("Error cargando reservas:", error);
+            }
+        }
+
+        async function mostrarCalendario() {
+            const container = document.getElementById('calendarioContainer');
+            if (!container) return;
+            container.innerHTML = '<div class="cargando">📡 Cargando turnos...</div>';
+            const dias = generarProximosDias();
+            const turnosFirestore = await cargarTurnosDesdeFirestore();
+            let html = '';
+            for (const dia of dias) {
+                const fechaKey = dia.fechaStr;
+                const fechaFormateada = `${dia.diaNumero}/${dia.mes}/${dia.año}`;
+                html += `<div class="dia-card"><div class="dia-titulo">${dia.diaSemana} ${fechaFormateada}</div><div class="turnos-lista">`;
+                for (const horario of HORARIOS) {
+                    const turnoKey = `${fechaKey}_${horario.id}`;
+                    const turnoData = turnosFirestore[turnoKey];
+                    const cuposRestantes = turnoData ? turnoData.cuposRestantes : CUPOS_POR_TURNO;
+                    const disponible = cuposRestantes > 0;
+                    const yaReservado = reservasAlumno.some(r => r.fecha === fechaKey && r.horarioId === horario.id);
+                    html += `<div class="turno-item"><div><div class="turno-horario">🕐 ${horario.label}</div><div class="turno-cupos">${cuposRestantes} cupos disponibles</div></div>`;
+                    if (yaReservado) html += `<span class="reservado">✓ Ya reservaste</span>`;
+                    else if (disponible) html += `<button class="btn-reservar" onclick="window.reservarTurno('${fechaKey}', '${horario.id}', '${horario.label}')">Reservar</button>`;
+                    else html += `<button class="btn-reservar" disabled>Sin cupos</button>`;
+                    html += `</div>`;
+                }
+                html += `</div></div>`;
+            }
+            container.innerHTML = html;
+            window.reservarTurno = reservarTurnoConTerminos;
+        }
+
+        function mostrarMisReservas() {
+            const container = document.getElementById('misReservasContainer');
+            const card = document.getElementById('misReservasCard');
+            if (!container) return;
+            if (reservasAlumno.length === 0) {
+                container.innerHTML = '<p>📭 No tenés turnos reservados aún.</p>';
+                card.style.display = 'block';
+                return;
+            }
+            let html = `<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse;"><thead><tr style="background: var(--primary); color: white;"><th style="padding: 10px;">Fecha</th><th style="padding: 10px;">Horario</th><th style="padding: 10px;">Estado</th><th style="padding: 10px;">Acciones</th></tr></thead><tbody>`;
+            for (const reserva of reservasAlumno) {
+                html += `<tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">${reserva.fecha}</td><td style="padding: 10px;">${reserva.horarioLabel}</td><td style="padding: 10px;">✅ Confirmada</td><td style="padding: 10px;"><button class="btn-eliminar" onclick="window.cancelarReserva('${reserva.id}')">Cancelar</button></td></tr>`;
+            }
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
+            card.style.display = 'block';
+            window.cancelarReserva = async (id) => {
+                if (confirm('¿Cancelar esta reserva?')) {
+                    await deleteDoc(doc(db, "reservas", id));
+                    await cargarReservasAlumno();
+                    await mostrarCalendario();
+                    mostrarMensaje("Reserva cancelada", "exito");
+                }
+            };
+        }
+
+        async function buscarAlumno() {
+            const telefono = document.getElementById('telefonoAlumno').value.trim();
+            const infoDiv = document.getElementById('infoAlumno');
+            if (!telefono) {
+                infoDiv.innerHTML = '<div class="mensaje error">⚠️ Ingresá un número de teléfono</div>';
+                return;
+            }
+            infoDiv.innerHTML = '<div class="mensaje cargando">🔍 Buscando alumno...</div>';
+            const alumno = await buscarAlumnoPorTelefono(telefono);
+            if (alumno) {
+                alumnoActual = alumno;
+                infoDiv.innerHTML = `<div class="info-alumno">✅ Alumno: ${alumno.nombreCompleto} (Nivel: ${alumno.nivel})</div>`;
+                document.getElementById('calendarioCard').style.display = 'block';
+                await cargarReservasAlumno();
+                await mostrarCalendario();
+            } else {
+                alumnoActual = null;
+                infoDiv.innerHTML = '<div class="mensaje error">❌ No se encontró ningún alumno con ese teléfono. Registrate primero.</div>';
+                document.getElementById('calendarioCard').style.display = 'none';
+                document.getElementById('misReservasCard').style.display = 'none';
+            }
+        }
+
+        function mostrarMensaje(msg, tipo) {
+            const mensajeDiv = document.getElementById('mensaje');
+            mensajeDiv.innerHTML = `<div class="mensaje ${tipo}">${msg}</div>`;
+            setTimeout(() => mensajeDiv.innerHTML = '', 4000);
+        }
+
+        document.getElementById('btnBuscarAlumno').addEventListener('click', buscarAlumno);
+        document.getElementById('telefonoAlumno').addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarAlumno(); });
+
+        cargarConfiguracion();
+        cargarLogo();
+        cargarTerminos();
+    </script>
 </body>
 </html>

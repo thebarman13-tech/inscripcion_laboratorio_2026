@@ -1,0 +1,54 @@
+/* Estilos para la sección de cursos del panel de administración */
+.cursos-container {
+    padding: 20px;
+}
+
+.cursos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.cursos-table th,
+.cursos-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.cursos-table th {
+    background-color: #667eea;
+    color: white;
+}
+
+.cursos-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.btn-editar {
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-eliminar {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-agregar {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}

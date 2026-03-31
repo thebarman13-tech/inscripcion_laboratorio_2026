@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Alumnos - Laboratorio</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .formulario-registro { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        input, select, button { width: 100%; padding: 10px; margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        .error { color: red; }
+        .exito { color: green; }
+    </style>
+</head>
+<body>
+
+<div class="formulario-registro">
+    <h2>📝 Registrar Nuevo Alumno</h2>
+    <form id="formRegistroAlumno">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="text" id="apellido" placeholder="Apellido" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="tel" id="telefono" placeholder="Teléfono" required>
+        <select id="nivel" required>
+            <option value="">Seleccionar nivel</option>
+            <option value="Inicial">Inicial</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Avanzado">Avanzado</option>
+        </select>
+        <button type="submit">Registrar Alumno</button>
+    </form>
+    <div id="mensajeRegistro"></div>
+</div>
+
+<script type="module">
+    import { registrarAlumno } from './js/conexion.js';
+    
+    document.getElementById('formRegistroAlumno').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const datos = {
+            nombre: document.getElementById('nombre').value,
+            apellido: document.getElementById('apellido').value,
+            email: document.getElementById('email').value,
+            telefono: document.getElementById('telefono').value,
+            nivel: document.getElementById('nivel').value
+        };
+        
+        const resultado = await registrarAlumno(datos);
+        const mensajeDiv = document.getElementById('mensajeRegistro');
+        
+        if (resultado.success) {
+            mensajeDiv.innerHTML = '<p class="exito">✅ Alumno registrado correctamente</p>';
+            document.getElementById('formRegistroAlumno').reset();
+        } else {
+            mensajeDiv.innerHTML = `<p class="error">❌ Error: ${resultado.error}</p>`;
+        }
+    });
+</script>
+
+</body>
+</html>
